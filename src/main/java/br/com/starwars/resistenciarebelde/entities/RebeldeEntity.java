@@ -19,7 +19,7 @@ public class RebeldeEntity {
     private Long idade;
     private String genero;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "localizacao_id")
     private LocalizacaoRebeldeEntity localizacao;
 

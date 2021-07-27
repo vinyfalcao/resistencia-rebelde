@@ -36,9 +36,12 @@ public class RebeldeServiceImpl implements RebeldeService {
 
     @Override
     public void updateLocalizacao(final UpdateLocalizacaoRebeldeDTO localizacaoRebeldeDTO) {
-        final var localizacaoPersistida = localizacaoRebeldeRepository.save(localizacaoRebeldeDTO.getLocalizacaoRebeldeEntity());
         final var rebelde = findById(localizacaoRebeldeDTO.getIdRebelde());
-        rebelde.setLocalizacao(localizacaoPersistida);
+        final var novaLocalizacao = localizacaoRebeldeDTO.getLocalizacaoRebeldeEntity();
+        final var localizacaoOptional = localizacaoRebeldeRepository.findByNomeGalaxiaAndLatitudeAndLongitude(novaLocalizacao.getNomeGalaxia(),
+                novaLocalizacao.getLatitude(),
+                novaLocalizacao.getLongitude());
+        rebelde.setLocalizacao(localizacaoOptional.orElse(novaLocalizacao));
         save(rebelde);
     }
 
