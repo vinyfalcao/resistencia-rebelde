@@ -1,8 +1,8 @@
 package br.com.starwars.resistenciarebelde.controllers;
 
+import br.com.starwars.resistenciarebelde.dtos.RebeldeDTO;
 import br.com.starwars.resistenciarebelde.dtos.UpdateLocalizacaoRebeldeDTO;
-import br.com.starwars.resistenciarebelde.entities.RebeldeEntity;
-import br.com.starwars.resistenciarebelde.services.RebeldeService;
+import br.com.starwars.resistenciarebelde.facades.RebeldeFacade;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -14,34 +14,34 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RebeldeController {
 
-    private final RebeldeService rebeldeService;
+    private final RebeldeFacade rebeldeFacade;
 
     @GetMapping
-    public List<RebeldeEntity> findAll(){
-        return rebeldeService.findAll();
+    public List<RebeldeDTO> findAll(){
+        return rebeldeFacade.findAll();
     }
 
     @GetMapping("/{id}")
-    public RebeldeEntity findById(@PathVariable final Long id){
-        return rebeldeService.findById(id);
+    public RebeldeDTO findById(@PathVariable final Long id){
+        return rebeldeFacade.findById(id);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public RebeldeEntity createNew(@RequestBody final RebeldeEntity rebeldeEntity){
-        return rebeldeService.save(rebeldeEntity);
+    public RebeldeDTO createNew(@RequestBody final RebeldeDTO rebeldeDTO){
+        return rebeldeFacade.save(rebeldeDTO);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping
-    public void update(@RequestBody final RebeldeEntity rebeldeEntity){
-        rebeldeService.save(rebeldeEntity);
+    public void update(@RequestBody final RebeldeDTO rebeldeDTO){
+        rebeldeFacade.save(rebeldeDTO);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PatchMapping
     public void updateLocalizacao(@RequestBody final UpdateLocalizacaoRebeldeDTO updateLocalizacaoRebeldeDTO){
-        rebeldeService.updateLocalizacao(updateLocalizacaoRebeldeDTO);
+        rebeldeFacade.updateLocalizacao(updateLocalizacaoRebeldeDTO);
     }
 
 }

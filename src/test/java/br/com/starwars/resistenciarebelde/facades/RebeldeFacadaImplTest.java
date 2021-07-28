@@ -1,5 +1,6 @@
 package br.com.starwars.resistenciarebelde.facades;
 
+import br.com.starwars.resistenciarebelde.dtos.LocalizacaoRebeldeDTO;
 import br.com.starwars.resistenciarebelde.dtos.RebeldeDTO;
 import br.com.starwars.resistenciarebelde.entities.LocalizacaoRebeldeEntity;
 import br.com.starwars.resistenciarebelde.entities.RebeldeEntity;
@@ -39,7 +40,12 @@ public class RebeldeFacadaImplTest {
 
     private List<RebeldeDTO> toDTO(final List<RebeldeEntity> rebeldeEntities){
         return rebeldeEntities.stream()
-                .map(entity -> new RebeldeDTO(entity.getId(), entity.getNome(), entity.getIdade(), entity.getGenero()))
+                .map(entity -> new RebeldeDTO(entity.getId(),
+                        entity.getNome(),
+                        entity.getIdade(),
+                        entity.getGenero(),
+                        toLocalizacaoRebeldeDto(generateLocalizacaoRebelde()))
+                )
                 .collect(toList());
     }
 
@@ -51,6 +57,22 @@ public class RebeldeFacadaImplTest {
     private LocalizacaoRebeldeEntity generateLocalizacaoRebelde() {
         return new LocalizacaoRebeldeEntity(1L, "Galaxia X", 20.0, -20.0, null);
     }
+
+    private LocalizacaoRebeldeEntity toLocalizacaoRebeldeEntity(final LocalizacaoRebeldeDTO localizacaoRebeldeDTO){
+        return new LocalizacaoRebeldeEntity(localizacaoRebeldeDTO.getId(),
+                localizacaoRebeldeDTO.getNomeGalaxia(),
+                localizacaoRebeldeDTO.getLatitude(),
+                localizacaoRebeldeDTO.getLongitude(),
+                null);
+    }
+
+    private LocalizacaoRebeldeDTO toLocalizacaoRebeldeDto(final LocalizacaoRebeldeEntity entity){
+        return new LocalizacaoRebeldeDTO(entity.getId(),
+                entity.getNomeGalaxia(),
+                entity.getLatitude(),
+                entity.getLongitude());
+    }
+
 
 
 

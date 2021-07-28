@@ -1,6 +1,5 @@
 package br.com.starwars.resistenciarebelde.services.impl;
 
-import br.com.starwars.resistenciarebelde.dtos.UpdateLocalizacaoRebeldeDTO;
 import br.com.starwars.resistenciarebelde.entities.LocalizacaoRebeldeEntity;
 import br.com.starwars.resistenciarebelde.entities.RebeldeEntity;
 import br.com.starwars.resistenciarebelde.repositories.LocalizacaoRebeldeRepository;
@@ -97,12 +96,9 @@ class RebeldeServiceImplTest {
                 expectedLocalizacaoRebelde.getLatitude(), expectedLocalizacaoRebelde.getLongitude()))
                 .thenReturn(Optional.of(expectedLocalizacaoRebelde));
 
-        final var updateLocalizacaoDTO = new UpdateLocalizacaoRebeldeDTO();
         final var localizacaoRequest = generateLocalizacaoRebeldeInstance(null);
-        updateLocalizacaoDTO.setIdRebelde(mockedRebelde.getId());
-        updateLocalizacaoDTO.setLocalizacaoRebeldeEntity(localizacaoRequest);
 
-        this.rebeldeServiceImpl.updateLocalizacao(updateLocalizacaoDTO);
+        this.rebeldeServiceImpl.updateLocalizacao(mockedRebelde.getId(), localizacaoRequest);
         final var expectedRebelde = generateRebeldeInstance(1L);
         expectedRebelde.setLocalizacao(expectedLocalizacaoRebelde);
         verify(this.mockedRebeldeRepository).save(expectedRebelde);
@@ -116,12 +112,9 @@ class RebeldeServiceImplTest {
         when(mockedLocalizacaoRebeldeRepository.findByNomeGalaxiaAndLatitudeAndLongitude(anyString(), anyDouble(), anyDouble()))
                 .thenReturn(Optional.empty());
 
-        final var updateLocalizacaoDTO = new UpdateLocalizacaoRebeldeDTO();
         final var expectedLocalizacaoRebelde = generateLocalizacaoRebeldeInstance(null);
-        updateLocalizacaoDTO.setIdRebelde(mockedRebelde.getId());
-        updateLocalizacaoDTO.setLocalizacaoRebeldeEntity(expectedLocalizacaoRebelde);
 
-        this.rebeldeServiceImpl.updateLocalizacao(updateLocalizacaoDTO);
+        this.rebeldeServiceImpl.updateLocalizacao(mockedRebelde.getId(), expectedLocalizacaoRebelde);
         final var expectedRebelde = generateRebeldeInstance(1L);
         expectedRebelde.setLocalizacao(expectedLocalizacaoRebelde);
         verify(this.mockedRebeldeRepository).save(expectedRebelde);

@@ -1,6 +1,6 @@
 package br.com.starwars.resistenciarebelde.services.impl;
 
-import br.com.starwars.resistenciarebelde.dtos.UpdateLocalizacaoRebeldeDTO;
+import br.com.starwars.resistenciarebelde.entities.LocalizacaoRebeldeEntity;
 import br.com.starwars.resistenciarebelde.entities.RebeldeEntity;
 import br.com.starwars.resistenciarebelde.repositories.LocalizacaoRebeldeRepository;
 import br.com.starwars.resistenciarebelde.repositories.RebeldeRepository;
@@ -34,13 +34,12 @@ public class RebeldeServiceImpl implements RebeldeService {
     }
 
     @Override
-    public void updateLocalizacao(final UpdateLocalizacaoRebeldeDTO localizacaoRebeldeDTO) {
-        final var rebelde = findById(localizacaoRebeldeDTO.getIdRebelde());
-        final var novaLocalizacao = localizacaoRebeldeDTO.getLocalizacaoRebeldeEntity();
-        final var localizacaoOptional = localizacaoRebeldeRepository.findByNomeGalaxiaAndLatitudeAndLongitude(novaLocalizacao.getNomeGalaxia(),
-                novaLocalizacao.getLatitude(),
-                novaLocalizacao.getLongitude());
-        rebelde.setLocalizacao(localizacaoOptional.orElse(novaLocalizacao));
+    public void updateLocalizacao(final Long idRebelde, final LocalizacaoRebeldeEntity localizacao) {
+        final var rebelde = findById(idRebelde);
+        final var localizacaoOptional = localizacaoRebeldeRepository.findByNomeGalaxiaAndLatitudeAndLongitude(localizacao.getNomeGalaxia(),
+                localizacao.getLatitude(),
+                localizacao.getLongitude());
+        rebelde.setLocalizacao(localizacaoOptional.orElse(localizacao));
         save(rebelde);
     }
 

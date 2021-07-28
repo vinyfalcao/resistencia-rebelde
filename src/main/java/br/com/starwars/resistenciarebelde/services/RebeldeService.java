@@ -1,6 +1,6 @@
 package br.com.starwars.resistenciarebelde.services;
 
-import br.com.starwars.resistenciarebelde.dtos.UpdateLocalizacaoRebeldeDTO;
+import br.com.starwars.resistenciarebelde.entities.LocalizacaoRebeldeEntity;
 import br.com.starwars.resistenciarebelde.entities.RebeldeEntity;
 
 import java.util.List;
@@ -13,7 +13,7 @@ public interface RebeldeService {
 
     RebeldeEntity save(RebeldeEntity rebeldeEntity);
 
-    void updateLocalizacao(UpdateLocalizacaoRebeldeDTO localizacao);
+    void updateLocalizacao(Long idRebelde, LocalizacaoRebeldeEntity localizacao);
 
 
 }

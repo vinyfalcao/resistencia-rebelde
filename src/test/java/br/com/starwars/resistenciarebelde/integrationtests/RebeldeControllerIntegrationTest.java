@@ -1,8 +1,11 @@
 package br.com.starwars.resistenciarebelde.integrationtests;
 
+import br.com.starwars.resistenciarebelde.dtos.LocalizacaoRebeldeDTO;
+import br.com.starwars.resistenciarebelde.dtos.RebeldeDTO;
 import br.com.starwars.resistenciarebelde.dtos.UpdateLocalizacaoRebeldeDTO;
 import br.com.starwars.resistenciarebelde.entities.LocalizacaoRebeldeEntity;
 import br.com.starwars.resistenciarebelde.entities.RebeldeEntity;
+import br.com.starwars.resistenciarebelde.facades.RebeldeFacade;
 import br.com.starwars.resistenciarebelde.repositories.RebeldeRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,6 +31,8 @@ class RebeldeControllerIntegrationTest {
     private MockMvc mockMvc;
     @Autowired
     private RebeldeRepository rebeldeRepository;
+    @Autowired
+    private RebeldeFacade rebeldeFacade;
 
     @BeforeEach
     public void setUp(){
@@ -37,7 +42,7 @@ class RebeldeControllerIntegrationTest {
     @Test
     public void shouldFindAll() throws Exception {
         final var expectedRebeldeInstance = rebeldeRepository.save(generateRebeldeInstance());
-        final var expectedJson = new ObjectMapper().writeValueAsString(Collections.singletonList(expectedRebeldeInstance));
+        final var expectedJson = new ObjectMapper().writeValueAsString(Collections.singletonList(toRebeldeDTO(expectedRebeldeInstance)));
 
         this.mockMvc.perform(get(REBELDES))
                 .andExpect(status().isOk())
@@ -78,9 +83,9 @@ class RebeldeControllerIntegrationTest {
         this.mockMvc.perform(patch(REBELDES).contentType(MediaType.APPLICATION_JSON).content(requestBody))
                 .andExpect(status().isNoContent());
 
-        final RebeldeEntity result = rebeldeRepository.findById(expectedRebeldeInstance.getId()).get();
-        dto.getLocalizacaoRebeldeEntity().setId(result.getLocalizacao().getId());
-        assertThat(result.getLocalizacao()).isEqualTo(dto.getLocalizacaoRebeldeEntity());
+        final RebeldeDTO result = rebeldeFacade.findById(expectedRebeldeInstance.getId());
+        dto.getLocalizacaoRebeldeDto().setId(result.getLocalizacaoRebeldeDTO().getId());
+        assertThat(result.getLocalizacaoRebeldeDTO()).isEqualTo(dto.getLocalizacaoRebeldeDto());
     }
 
 
@@ -95,12 +100,28 @@ class RebeldeControllerIntegrationTest {
     private UpdateLocalizacaoRebeldeDTO generateLocalizacaoRebeldeDTO(final Long idRebelde){
         UpdateLocalizacaoRebeldeDTO dto = new UpdateLocalizacaoRebeldeDTO();
         dto.setIdRebelde(idRebelde);
-        final var localizacao = new LocalizacaoRebeldeEntity();
+        final var localizacao = new LocalizacaoRebeldeDTO();
         localizacao.setNomeGalaxia("Galaxia");
         localizacao.setLatitude(10.0);
         localizacao.setLongitude(-10.0);
-        dto.setLocalizacaoRebeldeEntity(localizacao);
+        dto.setLocalizacaoRebeldeDto(localizacao);
         return dto;
+    }
+
+    private RebeldeDTO toRebeldeDTO(final RebeldeEntity rebeldeEntity){
+        return new RebeldeDTO(rebeldeEntity.getId(),
+                rebeldeEntity.getNome(),
+                rebeldeEntity.getIdade(),
+                rebeldeEntity.getGenero(),
+                rebeldeEntity.getLocalizacao() == null ? null : toLocalizacaoRebeldeDto(rebeldeEntity.getLocalizacao())
+        );
+    }
+
+    private LocalizacaoRebeldeDTO toLocalizacaoRebeldeDto(final LocalizacaoRebeldeEntity entity){
+        return new LocalizacaoRebeldeDTO(entity.getId(),
+                entity.getNomeGalaxia(),
+                entity.getLatitude(),
+                entity.getLongitude());
     }
 
 }

@@ -7,6 +7,6 @@ import lombok.Data;
 public class UpdateLocalizacaoRebeldeDTO {
 
     private Long idRebelde;
-    private LocalizacaoRebeldeEntity localizacaoRebeldeEntity;
+    private LocalizacaoRebeldeDTO localizacaoRebeldeDto;
 
 }
