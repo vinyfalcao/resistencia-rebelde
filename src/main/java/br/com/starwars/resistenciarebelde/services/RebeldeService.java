@@ -1,6 +1,6 @@
 package br.com.starwars.resistenciarebelde.services;
 
-import br.com.starwars.resistenciarebelde.UpdateLocalizacaoRebeldeDTO;
+import br.com.starwars.resistenciarebelde.dtos.UpdateLocalizacaoRebeldeDTO;
 import br.com.starwars.resistenciarebelde.entities.RebeldeEntity;
 
 import java.util.List;

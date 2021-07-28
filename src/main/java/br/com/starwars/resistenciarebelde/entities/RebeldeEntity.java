@@ -15,6 +15,7 @@ public class RebeldeEntity {
     @Id
     @GeneratedValue
     private Long id;
+    @Column(unique = true)
     private String nome;
     private Long idade;
     private String genero;

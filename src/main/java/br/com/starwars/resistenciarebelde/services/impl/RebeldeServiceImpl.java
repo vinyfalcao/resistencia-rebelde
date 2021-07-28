@@ -1,6 +1,6 @@
 package br.com.starwars.resistenciarebelde.services.impl;
 
-import br.com.starwars.resistenciarebelde.UpdateLocalizacaoRebeldeDTO;
+import br.com.starwars.resistenciarebelde.dtos.UpdateLocalizacaoRebeldeDTO;
 import br.com.starwars.resistenciarebelde.entities.RebeldeEntity;
 import br.com.starwars.resistenciarebelde.repositories.LocalizacaoRebeldeRepository;
 import br.com.starwars.resistenciarebelde.repositories.RebeldeRepository;
@@ -8,7 +8,6 @@ import br.com.starwars.resistenciarebelde.services.RebeldeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
 @Service

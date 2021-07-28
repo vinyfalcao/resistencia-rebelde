@@ -1,6 +1,6 @@
 package br.com.starwars.resistenciarebelde.controllers;
 
-import br.com.starwars.resistenciarebelde.UpdateLocalizacaoRebeldeDTO;
+import br.com.starwars.resistenciarebelde.dtos.UpdateLocalizacaoRebeldeDTO;
 import br.com.starwars.resistenciarebelde.entities.RebeldeEntity;
 import br.com.starwars.resistenciarebelde.services.RebeldeService;
 import lombok.RequiredArgsConstructor;

@@ -1,4 +1,4 @@
-package br.com.starwars.resistenciarebelde;
+package br.com.starwars.resistenciarebelde.dtos;
 
 import br.com.starwars.resistenciarebelde.entities.LocalizacaoRebeldeEntity;
 import lombok.Data;

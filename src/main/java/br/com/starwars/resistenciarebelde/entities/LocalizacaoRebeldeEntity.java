@@ -6,6 +6,7 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"nomeGalaxia", "latitude", "longitude"}))
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

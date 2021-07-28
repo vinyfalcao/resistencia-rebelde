@@ -1,6 +1,6 @@
 package br.com.starwars.resistenciarebelde.integrationtests;
 
-import br.com.starwars.resistenciarebelde.UpdateLocalizacaoRebeldeDTO;
+import br.com.starwars.resistenciarebelde.dtos.UpdateLocalizacaoRebeldeDTO;
 import br.com.starwars.resistenciarebelde.entities.LocalizacaoRebeldeEntity;
 import br.com.starwars.resistenciarebelde.entities.RebeldeEntity;
 import br.com.starwars.resistenciarebelde.repositories.RebeldeRepository;
