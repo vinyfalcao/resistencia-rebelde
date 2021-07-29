@@ -1,18 +1,21 @@
 package br.com.starwars.resistenciarebelde.facades;
 
-import br.com.starwars.resistenciarebelde.dtos.RebeldeDTO;
+import br.com.starwars.resistenciarebelde.dtos.CreateRebeldeDTO;
 import br.com.starwars.resistenciarebelde.dtos.RegistroTraicaoDTO;
 import br.com.starwars.resistenciarebelde.dtos.UpdateLocalizacaoRebeldeDTO;
+import br.com.starwars.resistenciarebelde.dtos.UpdateRebeldeDTO;
 
 import java.util.List;
 
 public interface RebeldeFacade {
 
-    List<RebeldeDTO> findAll();
+    List<CreateRebeldeDTO> findAll();
 
-    RebeldeDTO findById(Long id);
+    CreateRebeldeDTO findById(Long id);
 
-    RebeldeDTO save(RebeldeDTO rebeldeDTO);
+    CreateRebeldeDTO createNew(CreateRebeldeDTO createRebeldeDTO);
+
+    UpdateRebeldeDTO updateRebelde(UpdateRebeldeDTO updateRebeldeDTO);
 
     void updateLocalizacao(UpdateLocalizacaoRebeldeDTO localizacao);
 

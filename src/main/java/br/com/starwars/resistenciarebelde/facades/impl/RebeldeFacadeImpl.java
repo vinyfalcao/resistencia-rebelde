@@ -1,9 +1,6 @@
 package br.com.starwars.resistenciarebelde.facades.impl;
 
-import br.com.starwars.resistenciarebelde.dtos.LocalizacaoRebeldeDTO;
-import br.com.starwars.resistenciarebelde.dtos.RebeldeDTO;
-import br.com.starwars.resistenciarebelde.dtos.RegistroTraicaoDTO;
-import br.com.starwars.resistenciarebelde.dtos.UpdateLocalizacaoRebeldeDTO;
+import br.com.starwars.resistenciarebelde.dtos.*;
 import br.com.starwars.resistenciarebelde.entities.LocalizacaoRebeldeEntity;
 import br.com.starwars.resistenciarebelde.entities.RebeldeEntity;
 import br.com.starwars.resistenciarebelde.facades.RebeldeFacade;
@@ -26,20 +23,27 @@ public class RebeldeFacadeImpl implements RebeldeFacade {
     private final ModelMapper modelMapper;
 
     @Override
-    public List<RebeldeDTO> findAll() {
+    public List<CreateRebeldeDTO> findAll() {
         return this.rebeldeService.findAll().stream()
                 .map(this::toRebeldeDTO)
                 .collect(toList());
     }
 
     @Override
-    public RebeldeDTO findById(final Long id) {
+    public CreateRebeldeDTO findById(final Long id) {
         return toRebeldeDTO(this.rebeldeService.findById(id));
     }
 
     @Override
-    public RebeldeDTO save(final RebeldeDTO rebeldeDTO) {
-        return toRebeldeDTO(this.rebeldeService.save(toRebeldeEntity(rebeldeDTO)));
+    public CreateRebeldeDTO createNew(final CreateRebeldeDTO createRebeldeDTO) {
+        return toRebeldeDTO(this.rebeldeService.save(toRebeldeEntity(createRebeldeDTO)));
+    }
+
+    @Override
+    public UpdateRebeldeDTO updateRebelde(UpdateRebeldeDTO updateRebeldeDTO) {
+        final RebeldeEntity entity = this.rebeldeService.save(
+                modelMapper.map(updateRebeldeDTO, RebeldeEntity.class));
+        return modelMapper.map(entity, UpdateRebeldeDTO.class);
     }
 
     @Override
@@ -53,8 +57,8 @@ public class RebeldeFacadeImpl implements RebeldeFacade {
         registroTraicaoService.reportarTraicao(registroTraicaoDTO.getIdRelator(), registroTraicaoDTO.getIdReportado());
     }
 
-    private RebeldeDTO toRebeldeDTO(final RebeldeEntity rebeldeEntity){
-        var rebeldeDTO = modelMapper.map(rebeldeEntity, RebeldeDTO.class);
+    private CreateRebeldeDTO toRebeldeDTO(final RebeldeEntity rebeldeEntity){
+        var rebeldeDTO = modelMapper.map(rebeldeEntity, CreateRebeldeDTO.class);
         if(rebeldeEntity.getLocalizacao() != null){
             rebeldeDTO.setLocalizacaoRebeldeDTO(modelMapper.map(rebeldeEntity.getLocalizacao(),
                     LocalizacaoRebeldeDTO.class));
@@ -62,11 +66,11 @@ public class RebeldeFacadeImpl implements RebeldeFacade {
         return rebeldeDTO;
     }
 
-    private RebeldeEntity toRebeldeEntity(final RebeldeDTO rebeldeDTO){
-        var rebeldeEntity = modelMapper.map(rebeldeDTO, RebeldeEntity.class);
-        if(rebeldeDTO.getLocalizacaoRebeldeDTO() != null){
+    private RebeldeEntity toRebeldeEntity(final CreateRebeldeDTO createRebeldeDTO){
+        var rebeldeEntity = modelMapper.map(createRebeldeDTO, RebeldeEntity.class);
+        if(createRebeldeDTO.getLocalizacaoRebeldeDTO() != null){
             rebeldeEntity.setLocalizacao(
-                    modelMapper.map(rebeldeDTO.getLocalizacaoRebeldeDTO(), LocalizacaoRebeldeEntity.class));
+                    modelMapper.map(createRebeldeDTO.getLocalizacaoRebeldeDTO(), LocalizacaoRebeldeEntity.class));
         }
         return rebeldeEntity;
     }

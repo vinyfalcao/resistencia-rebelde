@@ -1,8 +1,9 @@
 package br.com.starwars.resistenciarebelde.controllers;
 
-import br.com.starwars.resistenciarebelde.dtos.RebeldeDTO;
+import br.com.starwars.resistenciarebelde.dtos.CreateRebeldeDTO;
 import br.com.starwars.resistenciarebelde.dtos.RegistroTraicaoDTO;
 import br.com.starwars.resistenciarebelde.dtos.UpdateLocalizacaoRebeldeDTO;
+import br.com.starwars.resistenciarebelde.dtos.UpdateRebeldeDTO;
 import br.com.starwars.resistenciarebelde.facades.RebeldeFacade;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,25 +19,25 @@ public class RebeldeController {
     private final RebeldeFacade rebeldeFacade;
 
     @GetMapping
-    public List<RebeldeDTO> findAll(){
+    public List<CreateRebeldeDTO> findAll(){
         return rebeldeFacade.findAll();
     }
 
     @GetMapping("/{id}")
-    public RebeldeDTO findById(@PathVariable final Long id){
+    public CreateRebeldeDTO findById(@PathVariable final Long id){
         return rebeldeFacade.findById(id);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public RebeldeDTO createNew(@RequestBody final RebeldeDTO rebeldeDTO){
-        return rebeldeFacade.save(rebeldeDTO);
+    public CreateRebeldeDTO createNew(@RequestBody final CreateRebeldeDTO createRebeldeDTO){
+        return rebeldeFacade.createNew(createRebeldeDTO);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping
-    public void update(@RequestBody final RebeldeDTO rebeldeDTO){
-        rebeldeFacade.save(rebeldeDTO);
+    public void update(@RequestBody final UpdateRebeldeDTO updateRebeldeDTO){
+        rebeldeFacade.updateRebelde(updateRebeldeDTO);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)

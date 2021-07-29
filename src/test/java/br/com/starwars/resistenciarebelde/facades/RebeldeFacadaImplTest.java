@@ -1,7 +1,7 @@
 package br.com.starwars.resistenciarebelde.facades;
 
 import br.com.starwars.resistenciarebelde.dtos.LocalizacaoRebeldeDTO;
-import br.com.starwars.resistenciarebelde.dtos.RebeldeDTO;
+import br.com.starwars.resistenciarebelde.dtos.CreateRebeldeDTO;
 import br.com.starwars.resistenciarebelde.entities.LocalizacaoRebeldeEntity;
 import br.com.starwars.resistenciarebelde.entities.RebeldeEntity;
 import br.com.starwars.resistenciarebelde.facades.impl.RebeldeFacadeImpl;
@@ -38,21 +38,22 @@ public class RebeldeFacadaImplTest {
         final List<RebeldeEntity> mockedEntityList = singletonList(generateRebeldeInstance());
         when(rebeldeService.findAll()).thenReturn(mockedEntityList);
 
-        final List<RebeldeDTO> expectedResult = toDTO(mockedEntityList);
-        final List<RebeldeDTO> result = rebeldeFacadeImpl.findAll();
+        final List<CreateRebeldeDTO> expectedResult = toDTO(mockedEntityList);
+        final List<CreateRebeldeDTO> result = rebeldeFacadeImpl.findAll();
         assertThat(result).isEqualTo(expectedResult);
     }
 
-    private List<RebeldeDTO> toDTO(final List<RebeldeEntity> rebeldeEntities){
+    private List<CreateRebeldeDTO> toDTO(final List<RebeldeEntity> rebeldeEntities){
         return rebeldeEntities.stream()
-                .map(entity -> new RebeldeDTO(entity.getId(),
-                        entity.getNome(),
-                        entity.getIdade(),
-                        entity.getGenero(),
-                        entity.isTraidor(),
-                        toLocalizacaoRebeldeDto(generateLocalizacaoRebelde()))
-                )
+                .map(this::toRebeldeDTO)
                 .collect(toList());
+    }
+    private CreateRebeldeDTO toRebeldeDTO(final RebeldeEntity rebeldeEntity){
+        var createRebeldeDTO = modelMapper.map(rebeldeEntity, CreateRebeldeDTO.class);
+        if(rebeldeEntity.getLocalizacao() != null){
+            createRebeldeDTO.setLocalizacaoRebeldeDTO(modelMapper.map(rebeldeEntity.getLocalizacao(), LocalizacaoRebeldeDTO.class));
+        }
+        return createRebeldeDTO;
     }
 
     private RebeldeEntity generateRebeldeInstance(){
