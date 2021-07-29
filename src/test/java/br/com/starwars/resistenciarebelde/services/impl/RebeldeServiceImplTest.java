@@ -4,6 +4,7 @@ import br.com.starwars.resistenciarebelde.entities.LocalizacaoRebeldeEntity;
 import br.com.starwars.resistenciarebelde.entities.RebeldeEntity;
 import br.com.starwars.resistenciarebelde.repositories.LocalizacaoRebeldeRepository;
 import br.com.starwars.resistenciarebelde.repositories.RebeldeRepository;
+import br.com.starwars.resistenciarebelde.testfactories.RebeldeEntityTestFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -35,9 +36,9 @@ class RebeldeServiceImplTest {
         //Preparação(setUp) do teste
         final List<RebeldeEntity>
                 expectedRebeldes = Arrays.asList(
-                generateRebeldeInstance(1L),
-                generateRebeldeInstance(2L),
-                generateRebeldeInstance(3L));
+                RebeldeEntityTestFactory.aRebeldeEntity().withId(1L).build(),
+                RebeldeEntityTestFactory.aRebeldeEntity().withId(2L).build(),
+                RebeldeEntityTestFactory.aRebeldeEntity().withId(3L).build());
         when(mockedRebeldeRepository.findAll()).thenReturn(expectedRebeldes);
         rebeldeServiceImpl = new RebeldeServiceImpl(mockedRebeldeRepository, mockedLocalizacaoRebeldeRepository);
         //Execução
@@ -60,7 +61,7 @@ class RebeldeServiceImplTest {
     public void shouldReturnExpectedRebeldeById(){
         //Preparação(setUp) do teste
         final long EXPECTED_ID = 1L;
-        final Optional<RebeldeEntity> expectedRebelde = Optional.of(generateRebeldeInstance(EXPECTED_ID));
+        final Optional<RebeldeEntity> expectedRebelde = Optional.of(RebeldeEntityTestFactory.aRebeldeEntity().withId(EXPECTED_ID).build());
         when(mockedRebeldeRepository.findById(EXPECTED_ID)).thenReturn(expectedRebelde);
         rebeldeServiceImpl = new RebeldeServiceImpl(mockedRebeldeRepository, mockedLocalizacaoRebeldeRepository);
         //Execução
@@ -79,7 +80,7 @@ class RebeldeServiceImplTest {
 
     @Test
     public void shouldSaveRebelde(){
-        final var expectedRebelde = generateRebeldeInstance(1L);
+        final var expectedRebelde = RebeldeEntityTestFactory.aRebeldeEntity().withId(1L).build();
         when(mockedRebeldeRepository.save(expectedRebelde)).thenReturn(expectedRebelde);
         rebeldeServiceImpl = new RebeldeServiceImpl(mockedRebeldeRepository, mockedLocalizacaoRebeldeRepository);
 
@@ -88,7 +89,7 @@ class RebeldeServiceImplTest {
 
     @Test
     public void whenUpdateLocalizacaoRebeldeShouldUseExistingLocalizacaoIfExists(){
-        final var mockedRebelde = generateRebeldeInstance(1L);
+        final var mockedRebelde = RebeldeEntityTestFactory.aRebeldeEntity().withId(1L).build();
         when(mockedRebeldeRepository.findById(mockedRebelde.getId())).thenReturn(Optional.of(mockedRebelde));
 
         final var expectedLocalizacaoRebelde = generateLocalizacaoRebeldeInstance(1L);
@@ -99,14 +100,14 @@ class RebeldeServiceImplTest {
         final var localizacaoRequest = generateLocalizacaoRebeldeInstance(null);
 
         this.rebeldeServiceImpl.updateLocalizacao(mockedRebelde.getId(), localizacaoRequest);
-        final var expectedRebelde = generateRebeldeInstance(1L);
+        final var expectedRebelde = RebeldeEntityTestFactory.aRebeldeEntity().withId(1L).build();
         expectedRebelde.setLocalizacao(expectedLocalizacaoRebelde);
         verify(this.mockedRebeldeRepository).save(expectedRebelde);
     }
 
     @Test
     public void whenUpdateLocalizacaoRebeldeShouldUseProvidedLocalizacaoIfNotExists(){
-        final var mockedRebelde = generateRebeldeInstance(1L);
+        final var mockedRebelde = RebeldeEntityTestFactory.aRebeldeEntity().withId(1L).build();
         when(mockedRebeldeRepository.findById(mockedRebelde.getId())).thenReturn(Optional.of(mockedRebelde));
 
         when(mockedLocalizacaoRebeldeRepository.findByNomeGalaxiaAndLatitudeAndLongitude(anyString(), anyDouble(), anyDouble()))
@@ -115,17 +116,13 @@ class RebeldeServiceImplTest {
         final var expectedLocalizacaoRebelde = generateLocalizacaoRebeldeInstance(null);
 
         this.rebeldeServiceImpl.updateLocalizacao(mockedRebelde.getId(), expectedLocalizacaoRebelde);
-        final var expectedRebelde = generateRebeldeInstance(1L);
-        expectedRebelde.setLocalizacao(expectedLocalizacaoRebelde);
+        final var expectedRebelde = RebeldeEntityTestFactory.aRebeldeEntity()
+                .withId(1L)
+                .withLocalizacao(expectedLocalizacaoRebelde)
+                .build();
         verify(this.mockedRebeldeRepository).save(expectedRebelde);
     }
 
-
-    private RebeldeEntity generateRebeldeInstance(final Long id){
-        RebeldeEntity rebeldeEntity = new RebeldeEntity();
-        rebeldeEntity.setId(id);
-        return rebeldeEntity;
-    }
 
     private LocalizacaoRebeldeEntity generateLocalizacaoRebeldeInstance(final Long id){
         LocalizacaoRebeldeEntity localizacaoRebeldeEntity = new LocalizacaoRebeldeEntity();

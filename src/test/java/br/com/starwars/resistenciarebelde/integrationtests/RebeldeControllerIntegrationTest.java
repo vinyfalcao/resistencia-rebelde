@@ -113,6 +113,7 @@ class RebeldeControllerIntegrationTest {
                 rebeldeEntity.getNome(),
                 rebeldeEntity.getIdade(),
                 rebeldeEntity.getGenero(),
+                rebeldeEntity.isTraidor(),
                 rebeldeEntity.getLocalizacao() == null ? null : toLocalizacaoRebeldeDto(rebeldeEntity.getLocalizacao())
         );
     }

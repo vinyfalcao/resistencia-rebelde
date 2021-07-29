@@ -1,6 +1,7 @@
 package br.com.starwars.resistenciarebelde.controllers;
 
 import br.com.starwars.resistenciarebelde.dtos.RebeldeDTO;
+import br.com.starwars.resistenciarebelde.dtos.RegistroTraicaoDTO;
 import br.com.starwars.resistenciarebelde.dtos.UpdateLocalizacaoRebeldeDTO;
 import br.com.starwars.resistenciarebelde.facades.RebeldeFacade;
 import lombok.RequiredArgsConstructor;
@@ -42,6 +43,12 @@ public class RebeldeController {
     @PatchMapping
     public void updateLocalizacao(@RequestBody final UpdateLocalizacaoRebeldeDTO updateLocalizacaoRebeldeDTO){
         rebeldeFacade.updateLocalizacao(updateLocalizacaoRebeldeDTO);
+    }
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/reportarTraicao")
+    public void reportarTraicao(@RequestBody final RegistroTraicaoDTO registroTraicaoDTO){
+        rebeldeFacade.reportarTraicao(registroTraicaoDTO);
     }
 
 }

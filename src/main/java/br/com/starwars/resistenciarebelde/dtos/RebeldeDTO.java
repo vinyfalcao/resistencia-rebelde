@@ -14,6 +14,7 @@ public class RebeldeDTO {
     private String nome;
     private Long idade;
     private String genero;
+    private boolean traidor;
     private LocalizacaoRebeldeDTO localizacaoRebeldeDTO;
 
 }

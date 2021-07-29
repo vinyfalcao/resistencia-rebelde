@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Data
@@ -19,9 +20,15 @@ public class RebeldeEntity {
     private String nome;
     private Long idade;
     private String genero;
+    private boolean traidor;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "localizacao_id")
     private LocalizacaoRebeldeEntity localizacao;
+
+    @OneToMany(mappedBy = "relator")
+    private List<RegistroTraicaoEntity> reportsRelatados;
+    @OneToMany(mappedBy = "reportado")
+    private List<RegistroTraicaoEntity> reportsRecebidos;
 
 }

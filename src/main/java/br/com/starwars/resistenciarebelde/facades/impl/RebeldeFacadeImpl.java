@@ -2,11 +2,13 @@ package br.com.starwars.resistenciarebelde.facades.impl;
 
 import br.com.starwars.resistenciarebelde.dtos.LocalizacaoRebeldeDTO;
 import br.com.starwars.resistenciarebelde.dtos.RebeldeDTO;
+import br.com.starwars.resistenciarebelde.dtos.RegistroTraicaoDTO;
 import br.com.starwars.resistenciarebelde.dtos.UpdateLocalizacaoRebeldeDTO;
 import br.com.starwars.resistenciarebelde.entities.LocalizacaoRebeldeEntity;
 import br.com.starwars.resistenciarebelde.entities.RebeldeEntity;
 import br.com.starwars.resistenciarebelde.facades.RebeldeFacade;
 import br.com.starwars.resistenciarebelde.services.RebeldeService;
+import br.com.starwars.resistenciarebelde.services.RegistroTraicaoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -19,6 +21,7 @@ import static java.util.stream.Collectors.toList;
 public class RebeldeFacadeImpl implements RebeldeFacade {
 
     private final RebeldeService rebeldeService;
+    private final RegistroTraicaoService registroTraicaoService;
 
     @Override
     public List<RebeldeDTO> findAll() {
@@ -43,11 +46,17 @@ public class RebeldeFacadeImpl implements RebeldeFacade {
                 toLocalizacaoRebeldeEntity(localizacao.getLocalizacaoRebeldeDto()));
     }
 
+    @Override
+    public void reportarTraicao(RegistroTraicaoDTO registroTraicaoDTO) {
+        registroTraicaoService.reportarTraicao(registroTraicaoDTO.getIdRelator(), registroTraicaoDTO.getIdReportado());
+    }
+
     private RebeldeDTO toRebeldeDTO(final RebeldeEntity rebeldeEntity){
         return new RebeldeDTO(rebeldeEntity.getId(),
                 rebeldeEntity.getNome(),
                 rebeldeEntity.getIdade(),
                 rebeldeEntity.getGenero(),
+                rebeldeEntity.isTraidor(),
                 rebeldeEntity.getLocalizacao() == null ? null : toLocalizacaoRebeldeDto(rebeldeEntity.getLocalizacao())
         );
     }
@@ -57,9 +66,12 @@ public class RebeldeFacadeImpl implements RebeldeFacade {
                 rebeldeDTO.getNome(),
                 rebeldeDTO.getIdade(),
                 rebeldeDTO.getGenero(),
+                rebeldeDTO.isTraidor(),
                 rebeldeDTO.getLocalizacaoRebeldeDTO() == null
                         ? null
-                        : toLocalizacaoRebeldeEntity(rebeldeDTO.getLocalizacaoRebeldeDTO())
+                        : toLocalizacaoRebeldeEntity(rebeldeDTO.getLocalizacaoRebeldeDTO()),
+                null,
+                null
         );
     }
 

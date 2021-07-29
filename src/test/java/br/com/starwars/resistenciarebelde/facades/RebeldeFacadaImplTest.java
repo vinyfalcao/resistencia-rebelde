@@ -44,14 +44,15 @@ public class RebeldeFacadaImplTest {
                         entity.getNome(),
                         entity.getIdade(),
                         entity.getGenero(),
+                        entity.isTraidor(),
                         toLocalizacaoRebeldeDto(generateLocalizacaoRebelde()))
                 )
                 .collect(toList());
     }
 
     private RebeldeEntity generateRebeldeInstance(){
-        return new RebeldeEntity(1L, "Nome Teste", 500L, "Genero",
-                generateLocalizacaoRebelde());
+        return new RebeldeEntity(1L, "Nome Teste", 500L, "Genero",false,
+                generateLocalizacaoRebelde(), null, null);
     }
 
     private LocalizacaoRebeldeEntity generateLocalizacaoRebelde() {
