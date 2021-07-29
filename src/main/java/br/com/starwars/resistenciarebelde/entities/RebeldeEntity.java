@@ -30,5 +30,7 @@ public class RebeldeEntity {
     private List<RegistroTraicaoEntity> reportsRelatados;
     @OneToMany(mappedBy = "reportado")
     private List<RegistroTraicaoEntity> reportsRecebidos;
+    @OneToMany(mappedBy = "rebelde")
+    private List<ItemInventarioEntity> inventario;
 
 }

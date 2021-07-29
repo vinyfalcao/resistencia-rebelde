@@ -30,7 +30,7 @@ class RegistroTraicaoRepositoryTest {
     }
 
     private RebeldeEntity generateRebeldeInstance(final String nome){
-        return new RebeldeEntity(null, nome, 500L, "Genero",false,  null, null, null);
+        return new RebeldeEntity(null, nome, 500L, "Genero",false,  null, null, null, null);
     }
 
 

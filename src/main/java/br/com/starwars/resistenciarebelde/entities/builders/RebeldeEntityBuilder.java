@@ -58,7 +58,7 @@ public class RebeldeEntityBuilder {
     }
 
     public RebeldeEntity build(){
-        return new RebeldeEntity(id, nome, idade, genero, traidor, localizacao, reportsRelatados, reportsRecebidos);
+        return new RebeldeEntity(id, nome, idade, genero, traidor, localizacao, reportsRelatados, reportsRecebidos, null);
     }
 
 }

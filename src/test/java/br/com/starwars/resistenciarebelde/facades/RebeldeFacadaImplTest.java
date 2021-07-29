@@ -10,7 +10,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.modelmapper.ModelMapper;
 
 import java.util.List;
 
@@ -24,6 +26,9 @@ public class RebeldeFacadaImplTest {
 
     @Mock
     private RebeldeService rebeldeService;
+
+    @Spy
+    private ModelMapper modelMapper = new ModelMapper();
 
     @InjectMocks
     private RebeldeFacadeImpl rebeldeFacadeImpl;
@@ -52,7 +57,7 @@ public class RebeldeFacadaImplTest {
 
     private RebeldeEntity generateRebeldeInstance(){
         return new RebeldeEntity(1L, "Nome Teste", 500L, "Genero",false,
-                generateLocalizacaoRebelde(), null, null);
+                generateLocalizacaoRebelde(), null, null, null);
     }
 
     private LocalizacaoRebeldeEntity generateLocalizacaoRebelde() {

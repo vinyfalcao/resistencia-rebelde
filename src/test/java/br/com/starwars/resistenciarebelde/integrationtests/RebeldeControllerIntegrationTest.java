@@ -7,6 +7,7 @@ import br.com.starwars.resistenciarebelde.entities.LocalizacaoRebeldeEntity;
 import br.com.starwars.resistenciarebelde.entities.RebeldeEntity;
 import br.com.starwars.resistenciarebelde.facades.RebeldeFacade;
 import br.com.starwars.resistenciarebelde.repositories.RebeldeRepository;
+import br.com.starwars.resistenciarebelde.repositories.RegistroTraicaoRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,10 +33,13 @@ class RebeldeControllerIntegrationTest {
     @Autowired
     private RebeldeRepository rebeldeRepository;
     @Autowired
+    private RegistroTraicaoRepository registroTraicaoRepository;
+    @Autowired
     private RebeldeFacade rebeldeFacade;
 
     @BeforeEach
     public void setUp(){
+        registroTraicaoRepository.deleteAll();
         rebeldeRepository.deleteAll();
     }
 

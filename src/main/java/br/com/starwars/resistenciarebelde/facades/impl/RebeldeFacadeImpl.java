@@ -10,6 +10,7 @@ import br.com.starwars.resistenciarebelde.facades.RebeldeFacade;
 import br.com.starwars.resistenciarebelde.services.RebeldeService;
 import br.com.starwars.resistenciarebelde.services.RegistroTraicaoService;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -22,6 +23,7 @@ public class RebeldeFacadeImpl implements RebeldeFacade {
 
     private final RebeldeService rebeldeService;
     private final RegistroTraicaoService registroTraicaoService;
+    private final ModelMapper modelMapper;
 
     @Override
     public List<RebeldeDTO> findAll() {
@@ -43,7 +45,7 @@ public class RebeldeFacadeImpl implements RebeldeFacade {
     @Override
     public void updateLocalizacao(UpdateLocalizacaoRebeldeDTO localizacao) {
         this.rebeldeService.updateLocalizacao(localizacao.getIdRebelde(),
-                toLocalizacaoRebeldeEntity(localizacao.getLocalizacaoRebeldeDto()));
+                modelMapper.map(localizacao.getLocalizacaoRebeldeDto(), LocalizacaoRebeldeEntity.class));
     }
 
     @Override
@@ -52,42 +54,21 @@ public class RebeldeFacadeImpl implements RebeldeFacade {
     }
 
     private RebeldeDTO toRebeldeDTO(final RebeldeEntity rebeldeEntity){
-        return new RebeldeDTO(rebeldeEntity.getId(),
-                rebeldeEntity.getNome(),
-                rebeldeEntity.getIdade(),
-                rebeldeEntity.getGenero(),
-                rebeldeEntity.isTraidor(),
-                rebeldeEntity.getLocalizacao() == null ? null : toLocalizacaoRebeldeDto(rebeldeEntity.getLocalizacao())
-        );
+        var rebeldeDTO = modelMapper.map(rebeldeEntity, RebeldeDTO.class);
+        if(rebeldeEntity.getLocalizacao() != null){
+            rebeldeDTO.setLocalizacaoRebeldeDTO(modelMapper.map(rebeldeEntity.getLocalizacao(),
+                    LocalizacaoRebeldeDTO.class));
+        }
+        return rebeldeDTO;
     }
 
     private RebeldeEntity toRebeldeEntity(final RebeldeDTO rebeldeDTO){
-        return new RebeldeEntity(rebeldeDTO.getId(),
-                rebeldeDTO.getNome(),
-                rebeldeDTO.getIdade(),
-                rebeldeDTO.getGenero(),
-                rebeldeDTO.isTraidor(),
-                rebeldeDTO.getLocalizacaoRebeldeDTO() == null
-                        ? null
-                        : toLocalizacaoRebeldeEntity(rebeldeDTO.getLocalizacaoRebeldeDTO()),
-                null,
-                null
-        );
-    }
-
-    private LocalizacaoRebeldeEntity toLocalizacaoRebeldeEntity(final LocalizacaoRebeldeDTO localizacaoRebeldeDTO){
-        return new LocalizacaoRebeldeEntity(localizacaoRebeldeDTO.getId(),
-                localizacaoRebeldeDTO.getNomeGalaxia(),
-                localizacaoRebeldeDTO.getLatitude(),
-                localizacaoRebeldeDTO.getLongitude(),
-                null);
-    }
-
-    private LocalizacaoRebeldeDTO toLocalizacaoRebeldeDto(final LocalizacaoRebeldeEntity entity){
-        return new LocalizacaoRebeldeDTO(entity.getId(),
-                entity.getNomeGalaxia(),
-                entity.getLatitude(),
-                entity.getLongitude());
+        var rebeldeEntity = modelMapper.map(rebeldeDTO, RebeldeEntity.class);
+        if(rebeldeDTO.getLocalizacaoRebeldeDTO() != null){
+            rebeldeEntity.setLocalizacao(
+                    modelMapper.map(rebeldeDTO.getLocalizacaoRebeldeDTO(), LocalizacaoRebeldeEntity.class));
+        }
+        return rebeldeEntity;
     }
 
 }
