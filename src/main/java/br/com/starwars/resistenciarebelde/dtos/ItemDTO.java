@@ -4,15 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateRebeldeDTO {
+public class ItemDTO {
 
+    private Long id;
     private String nome;
-    private Long idade;
-    private String genero;
-    private LocalizacaoRebeldeDTO localizacaoRebeldeDTO;
+    private Long pontos;
 
 }
