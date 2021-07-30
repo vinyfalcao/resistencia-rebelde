@@ -14,5 +14,6 @@ public class CreateRebeldeDTO {
     private Long idade;
     private String genero;
     private LocalizacaoRebeldeDTO localizacaoRebeldeDTO;
+    private ItemInventarioRebeldeDTO itemInventarioRebeldeDTO;
 
 }

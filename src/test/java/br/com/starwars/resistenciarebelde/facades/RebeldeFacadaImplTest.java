@@ -1,11 +1,12 @@
 package br.com.starwars.resistenciarebelde.facades;
 
-import br.com.starwars.resistenciarebelde.dtos.LocalizacaoRebeldeDTO;
 import br.com.starwars.resistenciarebelde.dtos.CreateRebeldeDTO;
+import br.com.starwars.resistenciarebelde.dtos.LocalizacaoRebeldeDTO;
 import br.com.starwars.resistenciarebelde.entities.LocalizacaoRebeldeEntity;
 import br.com.starwars.resistenciarebelde.entities.RebeldeEntity;
 import br.com.starwars.resistenciarebelde.facades.impl.RebeldeFacadeImpl;
 import br.com.starwars.resistenciarebelde.services.RebeldeService;
+import br.com.starwars.resistenciarebelde.testfactories.ModelMapperTestFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -28,7 +29,7 @@ public class RebeldeFacadaImplTest {
     private RebeldeService rebeldeService;
 
     @Spy
-    private ModelMapper modelMapper = new ModelMapper();
+    private ModelMapper modelMapper = ModelMapperTestFactory.getModelMapperInstance();
 
     @InjectMocks
     private RebeldeFacadeImpl rebeldeFacadeImpl;

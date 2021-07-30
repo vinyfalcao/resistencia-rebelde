@@ -58,21 +58,11 @@ public class RebeldeFacadeImpl implements RebeldeFacade {
     }
 
     private CreateRebeldeDTO toRebeldeDTO(final RebeldeEntity rebeldeEntity){
-        var rebeldeDTO = modelMapper.map(rebeldeEntity, CreateRebeldeDTO.class);
-        if(rebeldeEntity.getLocalizacao() != null){
-            rebeldeDTO.setLocalizacaoRebeldeDTO(modelMapper.map(rebeldeEntity.getLocalizacao(),
-                    LocalizacaoRebeldeDTO.class));
-        }
-        return rebeldeDTO;
+        return modelMapper.map(rebeldeEntity, CreateRebeldeDTO.class);
     }
 
     private RebeldeEntity toRebeldeEntity(final CreateRebeldeDTO createRebeldeDTO){
-        var rebeldeEntity = modelMapper.map(createRebeldeDTO, RebeldeEntity.class);
-        if(createRebeldeDTO.getLocalizacaoRebeldeDTO() != null){
-            rebeldeEntity.setLocalizacao(
-                    modelMapper.map(createRebeldeDTO.getLocalizacaoRebeldeDTO(), LocalizacaoRebeldeEntity.class));
-        }
-        return rebeldeEntity;
+        return modelMapper.map(createRebeldeDTO, RebeldeEntity.class);
     }
 
 }
