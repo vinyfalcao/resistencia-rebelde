@@ -30,7 +30,7 @@ public class RebeldeEntity {
     private List<RegistroTraicaoEntity> reportsRelatados;
     @OneToMany(mappedBy = "reportado")
     private List<RegistroTraicaoEntity> reportsRecebidos;
-    @OneToMany(mappedBy = "rebelde")
+    @OneToMany(mappedBy = "rebelde", fetch = FetchType.EAGER)
     private List<ItemInventarioEntity> inventario;
 
 }

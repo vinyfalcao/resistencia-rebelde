@@ -14,9 +14,15 @@ class LocalizacaoRebeldeRepositoryTest {
 
     @Autowired
     private LocalizacaoRebeldeRepository localizacaoRebeldeRepository;
+    @Autowired
+    private RebeldeRepository rebeldeRepository;
+    @Autowired
+    private RegistroTraicaoRepository registroTraicaoRepository;
 
     @BeforeEach
     void setUp(){
+        registroTraicaoRepository.deleteAll();
+        rebeldeRepository.deleteAll();
         localizacaoRebeldeRepository.deleteAll();
     }
 

@@ -23,6 +23,6 @@ public class ItemInventarioEntity {
     @ManyToOne
     @JoinColumn(name = "rebelde_id")
     private RebeldeEntity rebelde;
-    private Long quantitade;
+    private Long quantidade;
 
 }

@@ -101,6 +101,7 @@ class RebeldeControllerIntegrationTest {
         rebeldeEntity.setNome("Teste teste");
         rebeldeEntity.setGenero("Teste");
         rebeldeEntity.setIdade(500L);
+        rebeldeEntity.setInventario(Collections.emptyList());
         return rebeldeEntity;
     }
 
