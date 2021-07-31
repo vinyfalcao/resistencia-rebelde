@@ -18,6 +18,7 @@ public class CreateRebeldeDTOEntityConverter extends AbstractConverter<CreateReb
 
     @Override
     protected RebeldeEntity convert(CreateRebeldeDTO createRebeldeDTO) {
+        modelMapper.addConverter(new ItemInventarioRebeldeDTOEntityConverter());
         final var result = modelMapper.map(createRebeldeDTO, RebeldeEntity.class);
         if(createRebeldeDTO.getLocalizacaoRebeldeDTO() != null){
             result.setLocalizacao(

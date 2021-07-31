@@ -2,6 +2,7 @@ package br.com.starwars.resistenciarebelde.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -30,7 +31,8 @@ public class RebeldeEntity {
     private List<RegistroTraicaoEntity> reportsRelatados;
     @OneToMany(mappedBy = "reportado")
     private List<RegistroTraicaoEntity> reportsRecebidos;
-    @OneToMany(mappedBy = "rebelde", fetch = FetchType.EAGER)
+    @EqualsAndHashCode.Exclude
+    @OneToMany(mappedBy = "rebelde", fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     private List<ItemInventarioEntity> inventario;
 
 }

@@ -3,10 +3,16 @@ package br.com.starwars.resistenciarebelde.integrationtests;
 import br.com.starwars.resistenciarebelde.dtos.CreateRebeldeDTO;
 import br.com.starwars.resistenciarebelde.dtos.LocalizacaoRebeldeDTO;
 import br.com.starwars.resistenciarebelde.dtos.UpdateLocalizacaoRebeldeDTO;
+import br.com.starwars.resistenciarebelde.dtos.UpdateRebeldeDTO;
+import br.com.starwars.resistenciarebelde.entities.ItemInventarioEntity;
 import br.com.starwars.resistenciarebelde.entities.RebeldeEntity;
 import br.com.starwars.resistenciarebelde.facades.RebeldeFacade;
+import br.com.starwars.resistenciarebelde.repositories.ItemInventarioRepository;
+import br.com.starwars.resistenciarebelde.repositories.ItemRepository;
 import br.com.starwars.resistenciarebelde.repositories.RebeldeRepository;
 import br.com.starwars.resistenciarebelde.repositories.RegistroTraicaoRepository;
+import br.com.starwars.resistenciarebelde.testfactories.ItemEntityTestFactory;
+import br.com.starwars.resistenciarebelde.testfactories.RebeldeEntityTestFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,16 +44,23 @@ class RebeldeControllerIntegrationTest {
     private RebeldeFacade rebeldeFacade;
     @Autowired
     private ModelMapper modelMapper;
+    @Autowired
+    private ItemRepository itemRepository;
+    @Autowired
+    private ItemInventarioRepository itemInventarioRepository;
 
     @BeforeEach
     public void setUp(){
+        itemInventarioRepository.deleteAllInBatch();
+        itemRepository.deleteAll();
         registroTraicaoRepository.deleteAll();
         rebeldeRepository.deleteAll();
     }
 
     @Test
     public void shouldFindAll() throws Exception {
-        final var expectedRebeldeInstance = rebeldeRepository.save(generateRebeldeInstance());
+        final RebeldeEntity rebeldeEntity = generateRebeldeInstance();
+        final var expectedRebeldeInstance = rebeldeRepository.save(rebeldeEntity);
         final var expectedJson = new ObjectMapper().writeValueAsString(Collections.singletonList(toRebeldeDTO(expectedRebeldeInstance)));
 
         this.mockMvc.perform(get(REBELDES))
@@ -57,23 +70,24 @@ class RebeldeControllerIntegrationTest {
 
     @Test
     public void shouldCreateNewRebelde() throws Exception{
-        final RebeldeEntity expectedRebelde = generateRebeldeInstance();
-        final var requestBody = new ObjectMapper().writeValueAsString(expectedRebelde);
+        RebeldeEntity expectedRebelde = generateRebeldeInstance();
+        final var createRebeldeDTO = toRebeldeDTO(expectedRebelde);
+        final var requestBody = new ObjectMapper().writeValueAsString(createRebeldeDTO);
 
         this.mockMvc.perform(post(REBELDES).content(requestBody).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.nome").value(expectedRebelde.getNome()))
                 .andExpect(jsonPath("$.genero").value(expectedRebelde.getGenero()))
-                .andExpect(jsonPath("$.idade").value(expectedRebelde.getIdade())
-                //.andExpect(jsonPath("$.id").isNotEmpty()
-                );
+                .andExpect(jsonPath("$.idade").value(expectedRebelde.getIdade()))
+                .andExpect(jsonPath("$.itemInventarioRebeldeDTO[0].itemId").value(expectedRebelde.getInventario().get(0).getItem().getId()));
     }
 
     @Test
     public void shouldUpdateRebelde() throws Exception {
         final var expectedRebeldeInstance = rebeldeRepository.save(generateRebeldeInstance());
         expectedRebeldeInstance.setNome("Novo Nome");
-        final var requestBody = new ObjectMapper().writeValueAsString(expectedRebeldeInstance);
+        final var updateRebeldeDto = modelMapper.map(expectedRebeldeInstance, UpdateRebeldeDTO.class);
+        final var requestBody = new ObjectMapper().writeValueAsString(updateRebeldeDto);
         this.mockMvc.perform(put(REBELDES).contentType(MediaType.APPLICATION_JSON).content(requestBody))
                 .andExpect(status().isNoContent());
 
@@ -97,11 +111,17 @@ class RebeldeControllerIntegrationTest {
 
 
     private RebeldeEntity generateRebeldeInstance() {
-        final RebeldeEntity rebeldeEntity = new RebeldeEntity();
-        rebeldeEntity.setNome("Teste teste");
-        rebeldeEntity.setGenero("Teste");
-        rebeldeEntity.setIdade(500L);
-        rebeldeEntity.setInventario(Collections.emptyList());
+        final var item = itemRepository.save(ItemEntityTestFactory.generateItemInstance());
+        final var inventario = Collections.singletonList(new ItemInventarioEntity(null, item, null, 1L));
+
+        final RebeldeEntity rebeldeEntity = RebeldeEntityTestFactory.aRebeldeEntity()
+                .withId(null)
+                .withNome("Teste teste")
+                .withGenero("Teste")
+                .withIdade(500L)
+                .withInventario(inventario)
+                .build();
+        inventario.get(0).setRebelde(rebeldeEntity);
         return rebeldeEntity;
     }
 
@@ -118,9 +138,6 @@ class RebeldeControllerIntegrationTest {
 
     private CreateRebeldeDTO toRebeldeDTO(final RebeldeEntity rebeldeEntity){
         var createRebeldeDTO = modelMapper.map(rebeldeEntity, CreateRebeldeDTO.class);
-        if(rebeldeEntity.getLocalizacao() != null){
-            createRebeldeDTO.setLocalizacaoRebeldeDTO(modelMapper.map(rebeldeEntity.getLocalizacao(), LocalizacaoRebeldeDTO.class));
-        }
         return createRebeldeDTO;
     }
 }

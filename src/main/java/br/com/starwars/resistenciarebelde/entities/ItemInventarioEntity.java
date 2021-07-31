@@ -3,6 +3,7 @@ package br.com.starwars.resistenciarebelde.entities;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 
@@ -20,7 +21,8 @@ public class ItemInventarioEntity {
     @ManyToOne
     @JoinColumn(name = "item_id")
     private ItemEntity item;
-    @ManyToOne
+    @ToString.Exclude
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "rebelde_id")
     private RebeldeEntity rebelde;
     private Long quantidade;

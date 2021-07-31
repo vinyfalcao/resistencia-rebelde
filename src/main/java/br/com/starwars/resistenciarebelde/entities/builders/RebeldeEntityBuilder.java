@@ -1,5 +1,6 @@
 package br.com.starwars.resistenciarebelde.entities.builders;
 
+import br.com.starwars.resistenciarebelde.entities.ItemInventarioEntity;
 import br.com.starwars.resistenciarebelde.entities.LocalizacaoRebeldeEntity;
 import br.com.starwars.resistenciarebelde.entities.RebeldeEntity;
 import br.com.starwars.resistenciarebelde.entities.RegistroTraicaoEntity;
@@ -16,6 +17,7 @@ public class RebeldeEntityBuilder {
     private LocalizacaoRebeldeEntity localizacao;
     private List<RegistroTraicaoEntity> reportsRelatados;
     private List<RegistroTraicaoEntity> reportsRecebidos;
+    private List<ItemInventarioEntity> inventario;
 
     public RebeldeEntityBuilder withId(final Long id){
         this.id = id;
@@ -57,8 +59,14 @@ public class RebeldeEntityBuilder {
         return this;
     }
 
-    public RebeldeEntity build(){
-        return new RebeldeEntity(id, nome, idade, genero, traidor, localizacao, reportsRelatados, reportsRecebidos, null);
+    public RebeldeEntityBuilder withInventario(List<ItemInventarioEntity> inventario) {
+        this.inventario = inventario;
+        return this;
     }
+
+    public RebeldeEntity build(){
+        return new RebeldeEntity(id, nome, idade, genero, traidor, localizacao, reportsRelatados, reportsRecebidos, inventario);
+    }
+
 
 }

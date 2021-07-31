@@ -1,14 +1,19 @@
 package br.com.starwars.resistenciarebelde.services.impl;
 
+import br.com.starwars.resistenciarebelde.entities.ItemInventarioEntity;
 import br.com.starwars.resistenciarebelde.entities.LocalizacaoRebeldeEntity;
 import br.com.starwars.resistenciarebelde.entities.RebeldeEntity;
+import br.com.starwars.resistenciarebelde.repositories.ItemInventarioRepository;
 import br.com.starwars.resistenciarebelde.repositories.LocalizacaoRebeldeRepository;
 import br.com.starwars.resistenciarebelde.repositories.RebeldeRepository;
 import br.com.starwars.resistenciarebelde.services.RebeldeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -16,6 +21,7 @@ public class RebeldeServiceImpl implements RebeldeService {
 
     private final RebeldeRepository rebeldeRepository;
     private final LocalizacaoRebeldeRepository localizacaoRebeldeRepository;
+    private final ItemInventarioRepository itemInventarioRepository;
 
     @Override
     public List<RebeldeEntity> findAll() {
@@ -30,6 +36,9 @@ public class RebeldeServiceImpl implements RebeldeService {
 
     @Override
     public RebeldeEntity save(final RebeldeEntity rebeldeEntity) {
+        if(rebeldeEntity.getInventario() != null){
+            rebeldeEntity.getInventario().forEach(itemInventario -> itemInventario.setRebelde(rebeldeEntity));
+        }
         return rebeldeRepository.save(rebeldeEntity);
     }
 
@@ -41,6 +50,54 @@ public class RebeldeServiceImpl implements RebeldeService {
                 localizacao.getLongitude());
         rebelde.setLocalizacao(localizacaoOptional.orElse(localizacao));
         save(rebelde);
+    }
+
+    @Override
+    public void executarTransacao(Long idRebelde1,
+                                  Long idRebelde2,
+                                  Map<Long, Long> itemsRebelde1,
+                                  Map<Long, Long> itemsRebelde2) {
+        var rebelde1 = findById(idRebelde1);
+        var rebelde2 = findById(idRebelde2);
+        var itemsInventario1 = rebelde1.getInventario().stream()
+                .filter(itemInventario -> itemsRebelde1.containsKey(itemInventario.getItem().getId()))
+                .collect(Collectors.toList());
+        var itemsInventario2 = rebelde2.getInventario().stream()
+                .filter(itemInventario -> itemsRebelde2.containsKey(itemInventario.getItem().getId()))
+                .collect(Collectors.toList());
+
+        final List<ItemInventarioEntity> itemsInventarioResult1
+                = resolveItemsInventarioTransaction(itemsRebelde1, rebelde2, itemsInventario1, itemsInventario2);
+
+        final List<ItemInventarioEntity> itemsInventarioResult2
+                = resolveItemsInventarioTransaction(itemsRebelde2, rebelde1, itemsInventario2, itemsInventario1);
+
+        itemInventarioRepository.saveAll(itemsInventarioResult1);
+        itemInventarioRepository.saveAll(itemsInventarioResult2);
+    }
+
+    private List<ItemInventarioEntity> resolveItemsInventarioTransaction(Map<Long, Long> itemsRebelde,
+                                                   RebeldeEntity destinationRebelde,
+                                                   List<ItemInventarioEntity> itemsInventarioSource,
+                                                   List<ItemInventarioEntity> itemsInventarioDestination ) {
+        List<ItemInventarioEntity> result = new ArrayList<>();
+        itemsInventarioSource.forEach(itemInventario -> {
+            final Long transactionQuantity = itemsRebelde.get(itemInventario.getItem().getId());
+            if(itemInventario.getQuantidade() > transactionQuantity){
+                itemInventario.setQuantidade(itemInventario.getQuantidade() - transactionQuantity);
+                result.add(
+                        new ItemInventarioEntity(
+                                itemInventario.getId(),
+                                itemInventario.getItem(),
+                                destinationRebelde,
+                                transactionQuantity));
+
+            }else{
+                itemInventario.setRebelde(destinationRebelde);
+                result.add(itemInventario);
+            }
+        });
+        return result;
     }
 
 }

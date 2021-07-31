@@ -1,7 +1,10 @@
 package br.com.starwars.resistenciarebelde.services.impl;
 
+import br.com.starwars.resistenciarebelde.entities.ItemEntity;
+import br.com.starwars.resistenciarebelde.entities.ItemInventarioEntity;
 import br.com.starwars.resistenciarebelde.entities.LocalizacaoRebeldeEntity;
 import br.com.starwars.resistenciarebelde.entities.RebeldeEntity;
+import br.com.starwars.resistenciarebelde.repositories.ItemInventarioRepository;
 import br.com.starwars.resistenciarebelde.repositories.LocalizacaoRebeldeRepository;
 import br.com.starwars.resistenciarebelde.repositories.RebeldeRepository;
 import br.com.starwars.resistenciarebelde.testfactories.RebeldeEntityTestFactory;
@@ -11,10 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -28,8 +28,12 @@ class RebeldeServiceImplTest {
     private RebeldeRepository mockedRebeldeRepository;
     @Mock
     private LocalizacaoRebeldeRepository mockedLocalizacaoRebeldeRepository;
+    @Mock
+    private ItemInventarioRepository itemInventarioRepository;
     @InjectMocks
     private RebeldeServiceImpl rebeldeServiceImpl;
+
+
 
     @Test
     public void shouldReturnAllRebeldes(){
@@ -40,7 +44,6 @@ class RebeldeServiceImplTest {
                 RebeldeEntityTestFactory.aRebeldeEntity().withId(2L).build(),
                 RebeldeEntityTestFactory.aRebeldeEntity().withId(3L).build());
         when(mockedRebeldeRepository.findAll()).thenReturn(expectedRebeldes);
-        rebeldeServiceImpl = new RebeldeServiceImpl(mockedRebeldeRepository, mockedLocalizacaoRebeldeRepository);
         //Execução
         var result = rebeldeServiceImpl.findAll();
         assertThat(result).isEqualTo(expectedRebeldes);
@@ -51,7 +54,6 @@ class RebeldeServiceImplTest {
         //Preparação(setUp) do teste
         final List<RebeldeEntity> expectedRebeldes = Collections.emptyList();
         when(mockedRebeldeRepository.findAll()).thenReturn(expectedRebeldes);
-        rebeldeServiceImpl = new RebeldeServiceImpl(mockedRebeldeRepository, mockedLocalizacaoRebeldeRepository);
         //Execução
         var result = rebeldeServiceImpl.findAll();
         assertThat(result).isEqualTo(expectedRebeldes);
@@ -63,7 +65,6 @@ class RebeldeServiceImplTest {
         final long EXPECTED_ID = 1L;
         final Optional<RebeldeEntity> expectedRebelde = Optional.of(RebeldeEntityTestFactory.aRebeldeEntity().withId(EXPECTED_ID).build());
         when(mockedRebeldeRepository.findById(EXPECTED_ID)).thenReturn(expectedRebelde);
-        rebeldeServiceImpl = new RebeldeServiceImpl(mockedRebeldeRepository, mockedLocalizacaoRebeldeRepository);
         //Execução
         var result = rebeldeServiceImpl.findById(1L);
         assertThat(result).isEqualTo(expectedRebelde.get());
@@ -73,7 +74,6 @@ class RebeldeServiceImplTest {
     public void shouldThrowRuntimeExceptionWhenRebeldeNotFound(){
         //Preparação(setUp) do teste
         when(mockedRebeldeRepository.findById(anyLong())).thenReturn(Optional.empty());
-        rebeldeServiceImpl = new RebeldeServiceImpl(mockedRebeldeRepository, mockedLocalizacaoRebeldeRepository);
         //Execução
         assertThrows(RuntimeException.class, () -> rebeldeServiceImpl.findById(1L));
     }
@@ -82,7 +82,6 @@ class RebeldeServiceImplTest {
     public void shouldSaveRebelde(){
         final var expectedRebelde = RebeldeEntityTestFactory.aRebeldeEntity().withId(1L).build();
         when(mockedRebeldeRepository.save(expectedRebelde)).thenReturn(expectedRebelde);
-        rebeldeServiceImpl = new RebeldeServiceImpl(mockedRebeldeRepository, mockedLocalizacaoRebeldeRepository);
 
         assertThat(rebeldeServiceImpl.save(expectedRebelde)).isEqualTo(expectedRebelde);
     }
@@ -121,6 +120,75 @@ class RebeldeServiceImplTest {
                 .withLocalizacao(expectedLocalizacaoRebelde)
                 .build();
         verify(this.mockedRebeldeRepository).save(expectedRebelde);
+    }
+
+    @Test
+    public void shouldExecuteTransactionWhenItemsHasSameValue() {
+        var idRebelde1 = 1L;
+        var idRebelde2 = 2L;
+        Map<Long, Long> itemsRebelde1 = new HashMap<>();
+        itemsRebelde1.put(1L, 1L);
+        Map<Long, Long> itemsRebelde2 = new HashMap<>();
+        itemsRebelde2.put(2L, 1L);
+
+        final var itemInventario1 = getItemInventario(1L, 1L, idRebelde1, 1l);
+        final var rebelde1 = itemInventario1.getRebelde();
+        rebelde1.setInventario(Collections.singletonList(itemInventario1));
+        when(mockedRebeldeRepository.findById(rebelde1.getId())).thenReturn(Optional.of(rebelde1));
+
+        final var itemInventario2 = getItemInventario(2L, 2L, idRebelde2, 1l);
+        final var rebelde2 = itemInventario2.getRebelde();
+        rebelde2.setInventario(Collections.singletonList(itemInventario2));
+        when(mockedRebeldeRepository.findById(rebelde2.getId())).thenReturn(Optional.of(rebelde2));
+
+        rebeldeServiceImpl.executarTransacao(idRebelde1, idRebelde2, itemsRebelde1, itemsRebelde2);
+
+        itemInventario1.setRebelde(rebelde2);
+        verify(itemInventarioRepository).saveAll(Collections.singletonList(itemInventario1));
+        itemInventario2.setRebelde(rebelde1);
+        verify(itemInventarioRepository).saveAll(Collections.singletonList(itemInventario2));
+    }
+
+    @Test
+    public void shouldExecuteTransactionWhenRebeldeHasMoreThanOneItem(){
+        var idRebelde1 = 1L;
+        var idRebelde2 = 2L;
+        Map<Long, Long> itemsRebelde1 = new HashMap<>();
+        itemsRebelde1.put(1L, 1L);
+        Map<Long, Long> itemsRebelde2 = new HashMap<>();
+        itemsRebelde2.put(2L, 1L);
+
+        final var itemInventario1 = getItemInventario(1L, 1L, idRebelde1, 2l);
+        final var rebelde1 = itemInventario1.getRebelde();
+        rebelde1.setInventario(Collections.singletonList(itemInventario1));
+        when(mockedRebeldeRepository.findById(rebelde1.getId())).thenReturn(Optional.of(rebelde1));
+
+        final var itemInventario2 = getItemInventario(2L, 2L, idRebelde2, 1l);
+        final var rebelde2 = itemInventario2.getRebelde();
+        rebelde2.setInventario(Collections.singletonList(itemInventario2));
+        when(mockedRebeldeRepository.findById(rebelde2.getId())).thenReturn(Optional.of(rebelde2));
+
+        rebeldeServiceImpl.executarTransacao(idRebelde1, idRebelde2, itemsRebelde1, itemsRebelde2);
+
+        var expectedItemInventario1 =  getItemInventario(1L, 1L, idRebelde1, 1l);
+        expectedItemInventario1.getRebelde().setInventario(Arrays.asList(expectedItemInventario1));
+        expectedItemInventario1.equals(itemInventario1);
+        verify(itemInventarioRepository).saveAll(Arrays.asList(expectedItemInventario1, itemInventario2));
+
+        itemInventario2.setRebelde(rebelde1);
+        verify(itemInventarioRepository).saveAll(Arrays.asList(itemInventario2));
+    }
+
+
+
+    private ItemInventarioEntity getItemInventario(final Long idItemInventario,
+                                                   final Long idItem,
+                                                   final Long idRebelde,
+                                                   final Long quantidade) {
+        return new ItemInventarioEntity(idItemInventario,
+                new ItemEntity(idItem, null, null),
+                RebeldeEntityTestFactory.aRebeldeEntity().withId(idRebelde).build(),
+                quantidade);
     }
 
 

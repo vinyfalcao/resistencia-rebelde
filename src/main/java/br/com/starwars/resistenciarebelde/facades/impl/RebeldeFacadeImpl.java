@@ -10,7 +10,9 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static java.util.stream.Collectors.toList;
 
@@ -55,6 +57,19 @@ public class RebeldeFacadeImpl implements RebeldeFacade {
     @Override
     public void reportarTraicao(RegistroTraicaoDTO registroTraicaoDTO) {
         registroTraicaoService.reportarTraicao(registroTraicaoDTO.getIdRelator(), registroTraicaoDTO.getIdReportado());
+    }
+
+    @Override
+    public void executarTransacao(final TransacaoItemsRebeldeDTO transacao) {
+        final Map<Long, Long> proposta1 = generateTransactionItemsMap(transacao.getProposta1());
+        final Map<Long, Long> proposta2 = generateTransactionItemsMap(transacao.getProposta2());
+        rebeldeService.executarTransacao(transacao.getIdRebelde1(), transacao.getIdRebelde2(), proposta1, proposta2);
+    }
+
+    private Map<Long, Long> generateTransactionItemsMap(List<PropostaTransacaoDTO> proposta) {
+        final Map<Long, Long> map = new HashMap<>();
+        proposta.forEach(item -> map.put(item.getIdItem(), item.getQuantidade()));
+        return map;
     }
 
     private CreateRebeldeDTO toRebeldeDTO(final RebeldeEntity rebeldeEntity){

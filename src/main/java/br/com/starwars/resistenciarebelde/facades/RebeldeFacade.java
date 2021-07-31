@@ -1,9 +1,6 @@
 package br.com.starwars.resistenciarebelde.facades;
 
-import br.com.starwars.resistenciarebelde.dtos.CreateRebeldeDTO;
-import br.com.starwars.resistenciarebelde.dtos.RegistroTraicaoDTO;
-import br.com.starwars.resistenciarebelde.dtos.UpdateLocalizacaoRebeldeDTO;
-import br.com.starwars.resistenciarebelde.dtos.UpdateRebeldeDTO;
+import br.com.starwars.resistenciarebelde.dtos.*;
 
 import java.util.List;
 
@@ -20,5 +17,9 @@ public interface RebeldeFacade {
     void updateLocalizacao(UpdateLocalizacaoRebeldeDTO localizacao);
 
     void reportarTraicao(RegistroTraicaoDTO registroTraicaoDTO);
+
+    void executarTransacao(TransacaoItemsRebeldeDTO transacao);
+
+
 
 }

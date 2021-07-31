@@ -1,9 +1,6 @@
 package br.com.starwars.resistenciarebelde.controllers;
 
-import br.com.starwars.resistenciarebelde.dtos.CreateRebeldeDTO;
-import br.com.starwars.resistenciarebelde.dtos.RegistroTraicaoDTO;
-import br.com.starwars.resistenciarebelde.dtos.UpdateLocalizacaoRebeldeDTO;
-import br.com.starwars.resistenciarebelde.dtos.UpdateRebeldeDTO;
+import br.com.starwars.resistenciarebelde.dtos.*;
 import br.com.starwars.resistenciarebelde.facades.RebeldeFacade;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -51,5 +48,14 @@ public class RebeldeController {
     public void reportarTraicao(@RequestBody final RegistroTraicaoDTO registroTraicaoDTO){
         rebeldeFacade.reportarTraicao(registroTraicaoDTO);
     }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PutMapping("/transacao")
+    public void executarTransacao(@RequestBody final TransacaoItemsRebeldeDTO transacaoItemsRebeldeDTO){
+        rebeldeFacade.executarTransacao(transacaoItemsRebeldeDTO);
+    }
+
+
+
 
 }
