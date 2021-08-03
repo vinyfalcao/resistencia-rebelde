@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
 
 @RestController
 @RequestMapping("/rebeldes")
@@ -14,6 +16,7 @@ import java.util.List;
 public class RebeldeController {
 
     private final RebeldeFacade rebeldeFacade;
+    private final ExecutorService threadPool;
 
     @GetMapping
     public List<CreateRebeldeDTO> findAll(){
@@ -29,6 +32,12 @@ public class RebeldeController {
     @PostMapping
     public CreateRebeldeDTO createNew(@RequestBody final CreateRebeldeDTO createRebeldeDTO){
         return rebeldeFacade.createNew(createRebeldeDTO);
+    }
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/async")
+    public CompletableFuture<Void> createNewAsync(@RequestBody final CreateRebeldeDTO createRebeldeDTO){
+        return rebeldeFacade.createNewAsync(createRebeldeDTO)
+                .thenRunAsync(() -> System.out.println("Executou controller"));
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)

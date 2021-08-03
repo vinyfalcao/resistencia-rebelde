@@ -3,6 +3,7 @@ package br.com.starwars.resistenciarebelde.facades;
 import br.com.starwars.resistenciarebelde.dtos.*;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public interface RebeldeFacade {
 
@@ -21,5 +22,5 @@ public interface RebeldeFacade {
     void executarTransacao(TransacaoItemsRebeldeDTO transacao);
 
 
-
+    CompletableFuture<Void> createNewAsync(CreateRebeldeDTO createRebeldeDTO);
 }

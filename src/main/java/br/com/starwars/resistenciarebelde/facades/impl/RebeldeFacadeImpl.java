@@ -8,11 +8,13 @@ import br.com.starwars.resistenciarebelde.services.RebeldeService;
 import br.com.starwars.resistenciarebelde.services.RegistroTraicaoService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 import static java.util.stream.Collectors.toList;
 
@@ -64,6 +66,15 @@ public class RebeldeFacadeImpl implements RebeldeFacade {
         final Map<Long, Long> proposta1 = generateTransactionItemsMap(transacao.getProposta1());
         final Map<Long, Long> proposta2 = generateTransactionItemsMap(transacao.getProposta2());
         rebeldeService.executarTransacao(transacao.getIdRebelde1(), transacao.getIdRebelde2(), proposta1, proposta2);
+    }
+
+    @Async
+    @Override
+    public CompletableFuture<Void> createNewAsync(CreateRebeldeDTO createRebeldeDTO) {
+        return CompletableFuture.runAsync(() -> {
+            this.rebeldeService.save(toRebeldeEntity(createRebeldeDTO));
+            System.out.println("Rebelde foi salvo na thread " + Thread.currentThread().getName());
+        });
     }
 
     private Map<Long, Long> generateTransactionItemsMap(List<PropostaTransacaoDTO> proposta) {
