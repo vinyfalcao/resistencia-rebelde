@@ -3,11 +3,12 @@ package br.com.starwars.resistenciarebelde.facades;
 import br.com.starwars.resistenciarebelde.dtos.ItemDTO;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public interface ItemFacade {
 
-    List<ItemDTO> findAll();
+    CompletableFuture<List<ItemDTO>> findAll();
 
-    ItemDTO save(ItemDTO itemDTO);
+    CompletableFuture<ItemDTO> save(ItemDTO itemDTO);
 
 }

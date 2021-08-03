@@ -1,11 +1,13 @@
 package br.com.starwars.resistenciarebelde.entities;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+@Builder(setterPrefix = "with")
 @Entity
 @Table(name = "items")
 @Data

@@ -9,6 +9,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import static java.util.stream.Collectors.toList;
 
@@ -19,16 +20,17 @@ public class ItemFacadeImpl implements ItemFacade {
     private final ItemService itemService;
     private final ModelMapper modelMapper;
 
+    //@Async
     @Override
-    public List<ItemDTO> findAll() {
-        return itemService.findAll().stream()
+    public CompletableFuture<List<ItemDTO>> findAll() {
+        return itemService.findAll().thenApply(entities -> entities.stream()
                 .map(entity -> modelMapper.map(entity, ItemDTO.class))
-                .collect(toList());
+                .collect(toList()));
     }
 
     @Override
-    public ItemDTO save(ItemDTO itemDTO) {
-        final ItemEntity itemEntity = itemService.save(modelMapper.map(itemDTO, ItemEntity.class));
-        return modelMapper.map(itemEntity, ItemDTO.class);
+    public CompletableFuture<ItemDTO> save(ItemDTO itemDTO) {
+        return itemService.save(modelMapper.map(itemDTO, ItemEntity.class))
+                .thenApplyAsync(itemEntity -> modelMapper.map(itemEntity, ItemDTO.class));
     }
 }

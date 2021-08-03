@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 
 @Service
@@ -16,12 +17,12 @@ public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
 
     @Override
-    public List<ItemEntity> findAll() {
-        return itemRepository.findAll();
+    public CompletableFuture<List<ItemEntity>> findAll() {
+        return itemRepository.findAllBy();
     }
 
     @Override
-    public ItemEntity save(ItemEntity itemEntity) {
-        return itemRepository.save(itemEntity);
+    public CompletableFuture<ItemEntity> save(ItemEntity itemEntity) {
+        return CompletableFuture.supplyAsync(() -> itemRepository.save(itemEntity));
     }
 }

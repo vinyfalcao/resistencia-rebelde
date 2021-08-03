@@ -6,8 +6,11 @@ public class ItemEntityTestFactory {
 
     private ItemEntityTestFactory(){}
 
-    public static ItemEntity generateItemInstance(){
-        return new ItemEntity(null, "Água", 1L);
+    public static ItemEntity.ItemEntityBuilder generateItemInstance(){
+        return ItemEntity.builder()
+                .withNome("Agua")
+                .withPontos(1L);
     }
+
 
 }

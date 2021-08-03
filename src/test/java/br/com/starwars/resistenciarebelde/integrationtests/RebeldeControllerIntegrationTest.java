@@ -111,7 +111,7 @@ class RebeldeControllerIntegrationTest {
 
 
     private RebeldeEntity generateRebeldeInstance() {
-        final var item = itemRepository.save(ItemEntityTestFactory.generateItemInstance());
+        final var item = itemRepository.save(ItemEntityTestFactory.generateItemInstance().build());
         final var inventario = Collections.singletonList(new ItemInventarioEntity(null, item, null, 1L));
 
         final RebeldeEntity rebeldeEntity = RebeldeEntityTestFactory.aRebeldeEntity()

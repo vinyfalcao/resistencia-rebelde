@@ -63,8 +63,4 @@ public class RebeldeController {
     public void executarTransacao(@RequestBody final TransacaoItemsRebeldeDTO transacaoItemsRebeldeDTO){
         rebeldeFacade.executarTransacao(transacaoItemsRebeldeDTO);
     }
-
-
-
-
 }
