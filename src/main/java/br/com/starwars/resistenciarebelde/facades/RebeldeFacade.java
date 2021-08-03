@@ -7,7 +7,7 @@ import java.util.concurrent.CompletableFuture;
 
 public interface RebeldeFacade {
 
-    List<CreateRebeldeDTO> findAll();
+    CompletableFuture<List<CreateRebeldeDTO>> findAll();
 
     CreateRebeldeDTO findById(Long id);
 

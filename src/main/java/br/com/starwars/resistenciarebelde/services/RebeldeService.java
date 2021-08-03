@@ -5,10 +5,11 @@ import br.com.starwars.resistenciarebelde.entities.RebeldeEntity;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 public interface RebeldeService {
 
-    List<RebeldeEntity> findAll();
+    CompletableFuture<List<RebeldeEntity>> findAll();
 
     RebeldeEntity findById(Long id);
 

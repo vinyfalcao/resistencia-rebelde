@@ -19,7 +19,7 @@ public class RebeldeController {
     private final ExecutorService threadPool;
 
     @GetMapping
-    public List<CreateRebeldeDTO> findAll(){
+    public CompletableFuture<List<CreateRebeldeDTO>> findAll(){
         return rebeldeFacade.findAll();
     }
 

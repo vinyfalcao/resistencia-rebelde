@@ -27,10 +27,10 @@ public class RebeldeFacadeImpl implements RebeldeFacade {
     private final ModelMapper modelMapper;
 
     @Override
-    public List<CreateRebeldeDTO> findAll() {
-        return this.rebeldeService.findAll().stream()
+    public CompletableFuture<List<CreateRebeldeDTO>> findAll() {
+        return this.rebeldeService.findAll().thenApplyAsync(entities -> entities.stream()
                 .map(this::toRebeldeDTO)
-                .collect(toList());
+                .collect(toList()));
     }
 
     @Override

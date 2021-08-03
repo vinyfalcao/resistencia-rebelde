@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,8 +25,8 @@ public class RebeldeServiceImpl implements RebeldeService {
     private final ItemInventarioRepository itemInventarioRepository;
 
     @Override
-    public List<RebeldeEntity> findAll() {
-        return rebeldeRepository.findAll();
+    public CompletableFuture<List<RebeldeEntity>> findAll() {
+        return rebeldeRepository.findAllBy();
     }
 
     @Override

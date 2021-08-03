@@ -16,6 +16,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
@@ -35,12 +37,12 @@ public class RebeldeFacadaImplTest {
     private RebeldeFacadeImpl rebeldeFacadeImpl;
 
     @Test
-    public void shouldFindAllRebeldes(){
+    public void shouldFindAllRebeldes() throws ExecutionException, InterruptedException {
         final List<RebeldeEntity> mockedEntityList = singletonList(generateRebeldeInstance());
-        when(rebeldeService.findAll()).thenReturn(mockedEntityList);
+        when(rebeldeService.findAll()).thenReturn(CompletableFuture.completedFuture(mockedEntityList));
 
         final List<CreateRebeldeDTO> expectedResult = toDTO(mockedEntityList);
-        final List<CreateRebeldeDTO> result = rebeldeFacadeImpl.findAll();
+        final List<CreateRebeldeDTO> result = rebeldeFacadeImpl.findAll().get();
         assertThat(result).isEqualTo(expectedResult);
     }
 
