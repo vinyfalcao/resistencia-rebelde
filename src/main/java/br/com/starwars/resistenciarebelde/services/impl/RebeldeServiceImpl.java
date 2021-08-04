@@ -11,11 +11,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
+
+import static java.util.Collections.singletonList;
 
 @Service
 @RequiredArgsConstructor
@@ -39,21 +42,22 @@ public class RebeldeServiceImpl implements RebeldeService {
 
     @Override
     public RebeldeEntity save(final RebeldeEntity rebeldeEntity) {
-        if(rebeldeEntity.getInventario() != null){
+        if (rebeldeEntity.getInventario() != null) {
             rebeldeEntity.getInventario().forEach(itemInventario -> itemInventario.setRebelde(rebeldeEntity));
         }
         return rebeldeRepository.save(rebeldeEntity);
     }
 
     @Override
-    public void updateLocalizacao(final Long idRebelde, final LocalizacaoRebeldeEntity localizacao) throws ExecutionException, InterruptedException {
-        //final var rebelde = rebeldeRepository.findById(idRebelde).orElseThrow(() -> new RuntimeException("Rebelde não localizado"));
+    public CompletableFuture<Void> updateLocalizacao(final Long idRebelde, final LocalizacaoRebeldeEntity localizacao)
+            throws ExecutionException, InterruptedException {
         final var rebelde = rebeldeRepository.findById(idRebelde).get();
         final var localizacaoOptional = localizacaoRebeldeRepository.findByNomeGalaxiaAndLatitudeAndLongitude(localizacao.getNomeGalaxia(),
                 localizacao.getLatitude(),
                 localizacao.getLongitude());
         rebelde.setLocalizacao(localizacaoOptional.orElse(localizacao));
         save(rebelde);
+        return CompletableFuture.runAsync(() -> System.out.println("Eita"));
     }
 
     @Override
@@ -81,13 +85,13 @@ public class RebeldeServiceImpl implements RebeldeService {
     }
 
     private List<ItemInventarioEntity> resolveItemsInventarioTransaction(Map<Long, Long> itemsRebelde,
-                                                   RebeldeEntity destinationRebelde,
-                                                   List<ItemInventarioEntity> itemsInventarioSource,
-                                                   List<ItemInventarioEntity> itemsInventarioDestination ) {
+                                                                         RebeldeEntity destinationRebelde,
+                                                                         List<ItemInventarioEntity> itemsInventarioSource,
+                                                                         List<ItemInventarioEntity> itemsInventarioDestination) {
         List<ItemInventarioEntity> result = new ArrayList<>();
         itemsInventarioSource.forEach(itemInventario -> {
             final Long transactionQuantity = itemsRebelde.get(itemInventario.getItem().getId());
-            if(itemInventario.getQuantidade() > transactionQuantity){
+            if (itemInventario.getQuantidade() > transactionQuantity) {
                 itemInventario.setQuantidade(itemInventario.getQuantidade() - transactionQuantity);
                 result.add(
                         new ItemInventarioEntity(
@@ -96,7 +100,7 @@ public class RebeldeServiceImpl implements RebeldeService {
                                 destinationRebelde,
                                 transactionQuantity));
 
-            }else{
+            } else {
                 itemInventario.setRebelde(destinationRebelde);
                 result.add(itemInventario);
             }

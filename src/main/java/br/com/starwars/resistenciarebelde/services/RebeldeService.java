@@ -16,7 +16,7 @@ public interface RebeldeService {
 
     RebeldeEntity save(RebeldeEntity rebeldeEntity);
 
-    void updateLocalizacao(Long idRebelde, LocalizacaoRebeldeEntity localizacao) throws ExecutionException, InterruptedException;
+    CompletableFuture<Void> updateLocalizacao(Long idRebelde, LocalizacaoRebeldeEntity localizacao) throws ExecutionException, InterruptedException;
 
     void executarTransacao(Long idRebelde1, Long idRebelde2, Map<Long, Long> itemsRebelde1, Map<Long, Long> itemsRebelde2) throws ExecutionException, InterruptedException;
 

@@ -52,8 +52,8 @@ public class RebeldeFacadeImpl implements RebeldeFacade {
     }
 
     @Override
-    public void updateLocalizacao(UpdateLocalizacaoRebeldeDTO localizacao) throws ExecutionException, InterruptedException {
-        this.rebeldeService.updateLocalizacao(localizacao.getIdRebelde(),
+    public CompletableFuture<Void> updateLocalizacao(UpdateLocalizacaoRebeldeDTO localizacao) throws ExecutionException, InterruptedException {
+        return this.rebeldeService.updateLocalizacao(localizacao.getIdRebelde(),
                 modelMapper.map(localizacao.getLocalizacaoRebeldeDto(), LocalizacaoRebeldeEntity.class));
     }
 

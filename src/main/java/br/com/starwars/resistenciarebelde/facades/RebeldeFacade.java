@@ -16,7 +16,7 @@ public interface RebeldeFacade {
 
     UpdateRebeldeDTO updateRebelde(UpdateRebeldeDTO updateRebeldeDTO);
 
-    void updateLocalizacao(UpdateLocalizacaoRebeldeDTO localizacao) throws ExecutionException, InterruptedException;
+    CompletableFuture<Void> updateLocalizacao(UpdateLocalizacaoRebeldeDTO localizacao) throws ExecutionException, InterruptedException;
 
     void reportarTraicao(RegistroTraicaoDTO registroTraicaoDTO) throws ExecutionException, InterruptedException;
 

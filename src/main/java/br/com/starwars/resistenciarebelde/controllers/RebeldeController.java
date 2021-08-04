@@ -4,12 +4,12 @@ import br.com.starwars.resistenciarebelde.dtos.*;
 import br.com.starwars.resistenciarebelde.facades.RebeldeFacade;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
 
 @RestController
 @RequestMapping("/rebeldes")
@@ -17,14 +17,15 @@ import java.util.concurrent.ExecutorService;
 public class RebeldeController {
 
     private final RebeldeFacade rebeldeFacade;
-    private final ExecutorService threadPool;
 
     @GetMapping
+    @Async
     public CompletableFuture<List<CreateRebeldeDTO>> findAll(){
         return rebeldeFacade.findAll();
     }
 
     @GetMapping("/{id}")
+    @Async
     public CompletableFuture<CreateRebeldeDTO> findById(@PathVariable final Long id){
         return rebeldeFacade.findById(id);
     }
@@ -49,8 +50,9 @@ public class RebeldeController {
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PatchMapping
-    public void updateLocalizacao(@RequestBody final UpdateLocalizacaoRebeldeDTO updateLocalizacaoRebeldeDTO) throws ExecutionException, InterruptedException {
-        rebeldeFacade.updateLocalizacao(updateLocalizacaoRebeldeDTO);
+    @Async
+    public CompletableFuture<Void> updateLocalizacao(@RequestBody final UpdateLocalizacaoRebeldeDTO updateLocalizacaoRebeldeDTO) throws ExecutionException, InterruptedException {
+        return rebeldeFacade.updateLocalizacao(updateLocalizacaoRebeldeDTO);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
