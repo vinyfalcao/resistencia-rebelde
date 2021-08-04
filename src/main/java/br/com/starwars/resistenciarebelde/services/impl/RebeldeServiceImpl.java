@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,9 +31,10 @@ public class RebeldeServiceImpl implements RebeldeService {
     }
 
     @Override
-    public RebeldeEntity findById(final Long id) {
-        return rebeldeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Rebelde não localizado"));
+    public CompletableFuture<RebeldeEntity> findById(final Long id) {
+        return CompletableFuture.supplyAsync(() -> rebeldeRepository.findById(id))
+                .thenApplyAsync(optionalRebelde -> optionalRebelde
+                        .orElseThrow(() -> new RuntimeException("Rebelde não localizado")));
     }
 
     @Override
@@ -44,8 +46,9 @@ public class RebeldeServiceImpl implements RebeldeService {
     }
 
     @Override
-    public void updateLocalizacao(final Long idRebelde, final LocalizacaoRebeldeEntity localizacao) {
-        final var rebelde = findById(idRebelde);
+    public void updateLocalizacao(final Long idRebelde, final LocalizacaoRebeldeEntity localizacao) throws ExecutionException, InterruptedException {
+        //final var rebelde = rebeldeRepository.findById(idRebelde).orElseThrow(() -> new RuntimeException("Rebelde não localizado"));
+        final var rebelde = rebeldeRepository.findById(idRebelde).get();
         final var localizacaoOptional = localizacaoRebeldeRepository.findByNomeGalaxiaAndLatitudeAndLongitude(localizacao.getNomeGalaxia(),
                 localizacao.getLatitude(),
                 localizacao.getLongitude());
@@ -57,9 +60,9 @@ public class RebeldeServiceImpl implements RebeldeService {
     public void executarTransacao(Long idRebelde1,
                                   Long idRebelde2,
                                   Map<Long, Long> itemsRebelde1,
-                                  Map<Long, Long> itemsRebelde2) {
-        var rebelde1 = findById(idRebelde1);
-        var rebelde2 = findById(idRebelde2);
+                                  Map<Long, Long> itemsRebelde2) throws ExecutionException, InterruptedException {
+        var rebelde1 = findById(idRebelde1).get();
+        var rebelde2 = findById(idRebelde2).get();
         var itemsInventario1 = rebelde1.getInventario().stream()
                 .filter(itemInventario -> itemsRebelde1.containsKey(itemInventario.getItem().getId()))
                 .collect(Collectors.toList());

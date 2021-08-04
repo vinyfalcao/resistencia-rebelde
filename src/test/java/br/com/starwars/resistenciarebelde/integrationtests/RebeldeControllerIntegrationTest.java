@@ -73,6 +73,19 @@ class RebeldeControllerIntegrationTest {
     }
 
     @Test
+    public void shouldFindById() throws Exception{
+        final var expectedRebelde = rebeldeRepository.save(generateRebeldeInstance());
+
+        MvcResult mvcResult = this.mockMvc.perform(get(REBELDES + "/" + expectedRebelde.getId()))
+                .andReturn();
+        this.mockMvc.perform(asyncDispatch(mvcResult))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.nome").value(expectedRebelde.getNome()))
+                .andExpect(jsonPath("$.genero").value(expectedRebelde.getGenero()))
+                .andExpect(jsonPath("$.idade").value(expectedRebelde.getIdade()));
+    }
+
+    @Test
     public void shouldCreateNewRebelde() throws Exception{
         RebeldeEntity expectedRebelde = generateRebeldeInstance();
         final var createRebeldeDTO = toRebeldeDTO(expectedRebelde);
@@ -108,7 +121,7 @@ class RebeldeControllerIntegrationTest {
         this.mockMvc.perform(patch(REBELDES).contentType(MediaType.APPLICATION_JSON).content(requestBody))
                 .andExpect(status().isNoContent());
 
-        final CreateRebeldeDTO result = rebeldeFacade.findById(expectedRebeldeInstance.getId());
+        final CreateRebeldeDTO result = rebeldeFacade.findById(expectedRebeldeInstance.getId()).get();
         dto.getLocalizacaoRebeldeDto().setId(result.getLocalizacaoRebeldeDTO().getId());
         assertThat(result.getLocalizacaoRebeldeDTO()).isEqualTo(dto.getLocalizacaoRebeldeDto());
     }

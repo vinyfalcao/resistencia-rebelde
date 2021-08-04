@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 
 @RestController
@@ -24,7 +25,7 @@ public class RebeldeController {
     }
 
     @GetMapping("/{id}")
-    public CreateRebeldeDTO findById(@PathVariable final Long id){
+    public CompletableFuture<CreateRebeldeDTO> findById(@PathVariable final Long id){
         return rebeldeFacade.findById(id);
     }
 
@@ -48,19 +49,19 @@ public class RebeldeController {
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PatchMapping
-    public void updateLocalizacao(@RequestBody final UpdateLocalizacaoRebeldeDTO updateLocalizacaoRebeldeDTO){
+    public void updateLocalizacao(@RequestBody final UpdateLocalizacaoRebeldeDTO updateLocalizacaoRebeldeDTO) throws ExecutionException, InterruptedException {
         rebeldeFacade.updateLocalizacao(updateLocalizacaoRebeldeDTO);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/reportarTraicao")
-    public void reportarTraicao(@RequestBody final RegistroTraicaoDTO registroTraicaoDTO){
+    public void reportarTraicao(@RequestBody final RegistroTraicaoDTO registroTraicaoDTO) throws ExecutionException, InterruptedException {
         rebeldeFacade.reportarTraicao(registroTraicaoDTO);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping("/transacao")
-    public void executarTransacao(@RequestBody final TransacaoItemsRebeldeDTO transacaoItemsRebeldeDTO){
+    public void executarTransacao(@RequestBody final TransacaoItemsRebeldeDTO transacaoItemsRebeldeDTO) throws ExecutionException, InterruptedException {
         rebeldeFacade.executarTransacao(transacaoItemsRebeldeDTO);
     }
 }

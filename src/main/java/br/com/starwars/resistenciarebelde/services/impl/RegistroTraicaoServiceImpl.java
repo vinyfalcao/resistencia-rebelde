@@ -7,6 +7,8 @@ import br.com.starwars.resistenciarebelde.services.RegistroTraicaoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.concurrent.ExecutionException;
+
 @Service
 @RequiredArgsConstructor
 public class RegistroTraicaoServiceImpl implements RegistroTraicaoService {
@@ -15,9 +17,9 @@ public class RegistroTraicaoServiceImpl implements RegistroTraicaoService {
     private final RegistroTraicaoRepository registroTraicaoRepository;
 
     @Override
-    public void reportarTraicao(final Long idRelator, final Long idReportado) {
-        final var relator = rebeldeService.findById(idRelator);
-        final var reportado = rebeldeService.findById(idReportado);
+    public void reportarTraicao(final Long idRelator, final Long idReportado) throws ExecutionException, InterruptedException {
+        final var relator = rebeldeService.findById(idRelator).get();
+        final var reportado = rebeldeService.findById(idReportado).get();
         registroTraicaoRepository.save(new RegistroTraicaoEntity(relator, reportado));
         final var qttReports = registroTraicaoRepository.findByReportadoId(reportado.getId()).size();
         if(qttReports >= 3 && !reportado.isTraidor()){

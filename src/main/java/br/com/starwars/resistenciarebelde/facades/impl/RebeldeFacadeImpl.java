@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import static java.util.stream.Collectors.toList;
 
@@ -34,8 +35,8 @@ public class RebeldeFacadeImpl implements RebeldeFacade {
     }
 
     @Override
-    public CreateRebeldeDTO findById(final Long id) {
-        return toRebeldeDTO(this.rebeldeService.findById(id));
+    public CompletableFuture<CreateRebeldeDTO> findById(final Long id) {
+        return this.rebeldeService.findById(id).thenApplyAsync(this::toRebeldeDTO);
     }
 
     @Override
@@ -51,18 +52,18 @@ public class RebeldeFacadeImpl implements RebeldeFacade {
     }
 
     @Override
-    public void updateLocalizacao(UpdateLocalizacaoRebeldeDTO localizacao) {
+    public void updateLocalizacao(UpdateLocalizacaoRebeldeDTO localizacao) throws ExecutionException, InterruptedException {
         this.rebeldeService.updateLocalizacao(localizacao.getIdRebelde(),
                 modelMapper.map(localizacao.getLocalizacaoRebeldeDto(), LocalizacaoRebeldeEntity.class));
     }
 
     @Override
-    public void reportarTraicao(RegistroTraicaoDTO registroTraicaoDTO) {
+    public void reportarTraicao(RegistroTraicaoDTO registroTraicaoDTO) throws ExecutionException, InterruptedException {
         registroTraicaoService.reportarTraicao(registroTraicaoDTO.getIdRelator(), registroTraicaoDTO.getIdReportado());
     }
 
     @Override
-    public void executarTransacao(final TransacaoItemsRebeldeDTO transacao) {
+    public void executarTransacao(final TransacaoItemsRebeldeDTO transacao) throws ExecutionException, InterruptedException {
         final Map<Long, Long> proposta1 = generateTransactionItemsMap(transacao.getProposta1());
         final Map<Long, Long> proposta2 = generateTransactionItemsMap(transacao.getProposta2());
         rebeldeService.executarTransacao(transacao.getIdRebelde1(), transacao.getIdRebelde2(), proposta1, proposta2);

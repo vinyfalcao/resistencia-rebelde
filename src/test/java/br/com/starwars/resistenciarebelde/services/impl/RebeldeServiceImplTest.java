@@ -16,6 +16,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -37,37 +39,37 @@ class RebeldeServiceImplTest {
 
 
     @Test
-    public void shouldReturnAllRebeldes(){
+    public void shouldReturnAllRebeldes() throws ExecutionException, InterruptedException {
         //Preparação(setUp) do teste
         final List<RebeldeEntity>
                 expectedRebeldes = Arrays.asList(
                 RebeldeEntityTestFactory.aRebeldeEntity().withId(1L).build(),
                 RebeldeEntityTestFactory.aRebeldeEntity().withId(2L).build(),
                 RebeldeEntityTestFactory.aRebeldeEntity().withId(3L).build());
-        when(mockedRebeldeRepository.findAll()).thenReturn(expectedRebeldes);
+        when(mockedRebeldeRepository.findAllBy()).thenReturn(CompletableFuture.completedFuture(expectedRebeldes));
         //Execução
-        var result = rebeldeServiceImpl.findAll();
+        var result = rebeldeServiceImpl.findAll().get();
         assertThat(result).isEqualTo(expectedRebeldes);
     }
 
     @Test
-    public void shouldReturnAnEmptyListWhenRepositoryReturnsEmptyList(){
+    public void shouldReturnAnEmptyListWhenRepositoryReturnsEmptyList() throws ExecutionException, InterruptedException {
         //Preparação(setUp) do teste
         final List<RebeldeEntity> expectedRebeldes = Collections.emptyList();
-        when(mockedRebeldeRepository.findAll()).thenReturn(expectedRebeldes);
+        when(mockedRebeldeRepository.findAllBy()).thenReturn(CompletableFuture.completedFuture(expectedRebeldes));
         //Execução
-        var result = rebeldeServiceImpl.findAll();
+        var result = rebeldeServiceImpl.findAll().get();
         assertThat(result).isEqualTo(expectedRebeldes);
     }
 
     @Test
-    public void shouldReturnExpectedRebeldeById(){
+    public void shouldReturnExpectedRebeldeById() throws ExecutionException, InterruptedException {
         //Preparação(setUp) do teste
         final long EXPECTED_ID = 1L;
         final Optional<RebeldeEntity> expectedRebelde = Optional.of(RebeldeEntityTestFactory.aRebeldeEntity().withId(EXPECTED_ID).build());
         when(mockedRebeldeRepository.findById(EXPECTED_ID)).thenReturn(expectedRebelde);
         //Execução
-        var result = rebeldeServiceImpl.findById(1L);
+        var result = rebeldeServiceImpl.findById(1L).get();
         assertThat(result).isEqualTo(expectedRebelde.get());
     }
 
@@ -76,7 +78,7 @@ class RebeldeServiceImplTest {
         //Preparação(setUp) do teste
         when(mockedRebeldeRepository.findById(anyLong())).thenReturn(Optional.empty());
         //Execução
-        assertThrows(RuntimeException.class, () -> rebeldeServiceImpl.findById(1L));
+        assertThrows(ExecutionException.class, () -> rebeldeServiceImpl.findById(1L).get());
     }
 
     @Test
@@ -88,7 +90,7 @@ class RebeldeServiceImplTest {
     }
 
     @Test
-    public void whenUpdateLocalizacaoRebeldeShouldUseExistingLocalizacaoIfExists(){
+    public void whenUpdateLocalizacaoRebeldeShouldUseExistingLocalizacaoIfExists() throws ExecutionException, InterruptedException {
         final var mockedRebelde = RebeldeEntityTestFactory.aRebeldeEntity().withId(1L).build();
         when(mockedRebeldeRepository.findById(mockedRebelde.getId())).thenReturn(Optional.of(mockedRebelde));
 
@@ -106,7 +108,7 @@ class RebeldeServiceImplTest {
     }
 
     @Test
-    public void whenUpdateLocalizacaoRebeldeShouldUseProvidedLocalizacaoIfNotExists(){
+    public void whenUpdateLocalizacaoRebeldeShouldUseProvidedLocalizacaoIfNotExists() throws ExecutionException, InterruptedException {
         final var mockedRebelde = RebeldeEntityTestFactory.aRebeldeEntity().withId(1L).build();
         when(mockedRebeldeRepository.findById(mockedRebelde.getId())).thenReturn(Optional.of(mockedRebelde));
 
@@ -124,7 +126,7 @@ class RebeldeServiceImplTest {
     }
 
     @Test
-    public void shouldExecuteTransactionWhenItemsHasSameValue() {
+    public void shouldExecuteTransactionWhenItemsHasSameValue() throws ExecutionException, InterruptedException {
         var idRebelde1 = 1L;
         var idRebelde2 = 2L;
         Map<Long, Long> itemsRebelde1 = new HashMap<>();
@@ -152,7 +154,7 @@ class RebeldeServiceImplTest {
 
     @Disabled
     @Test
-    public void shouldExecuteTransactionWhenRebeldeHasMoreThanOneItem(){
+    public void shouldExecuteTransactionWhenRebeldeHasMoreThanOneItem() throws ExecutionException, InterruptedException {
         var idRebelde1 = 1L;
         var idRebelde2 = 2L;
         Map<Long, Long> itemsRebelde1 = new HashMap<>();
