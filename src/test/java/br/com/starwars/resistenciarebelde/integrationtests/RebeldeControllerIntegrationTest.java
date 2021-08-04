@@ -132,7 +132,6 @@ class RebeldeControllerIntegrationTest {
         final CreateRebeldeDTO result = rebeldeFacade.findById(expectedRebeldeInstance.getId()).get();
         dto.getLocalizacaoRebeldeDto().setId(result.getLocalizacaoRebeldeDTO().getId());
         assertThat(result.getLocalizacaoRebeldeDTO()).isEqualTo(dto.getLocalizacaoRebeldeDto());
-
     }
 
 
