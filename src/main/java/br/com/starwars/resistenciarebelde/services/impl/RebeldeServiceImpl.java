@@ -3,6 +3,7 @@ package br.com.starwars.resistenciarebelde.services.impl;
 import br.com.starwars.resistenciarebelde.entities.ItemInventarioEntity;
 import br.com.starwars.resistenciarebelde.entities.LocalizacaoRebeldeEntity;
 import br.com.starwars.resistenciarebelde.entities.RebeldeEntity;
+import br.com.starwars.resistenciarebelde.exceptions.RebeldeNaoLocalizadoException;
 import br.com.starwars.resistenciarebelde.repositories.ItemInventarioRepository;
 import br.com.starwars.resistenciarebelde.repositories.LocalizacaoRebeldeRepository;
 import br.com.starwars.resistenciarebelde.repositories.RebeldeRepository;
@@ -37,7 +38,7 @@ public class RebeldeServiceImpl implements RebeldeService {
     public CompletableFuture<RebeldeEntity> findById(final Long id) {
         return CompletableFuture.supplyAsync(() -> rebeldeRepository.findById(id))
                 .thenApplyAsync(optionalRebelde -> optionalRebelde
-                        .orElseThrow(() -> new RuntimeException("Rebelde não localizado")));
+                        .orElseThrow(() -> new RebeldeNaoLocalizadoException(id)));
     }
 
     @Override

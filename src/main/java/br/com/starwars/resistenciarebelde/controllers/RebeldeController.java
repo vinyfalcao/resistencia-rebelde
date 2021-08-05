@@ -1,12 +1,14 @@
 package br.com.starwars.resistenciarebelde.controllers;
 
 import br.com.starwars.resistenciarebelde.dtos.*;
+import br.com.starwars.resistenciarebelde.exceptions.RebeldeNaoLocalizadoException;
 import br.com.starwars.resistenciarebelde.facades.RebeldeFacade;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -18,8 +20,8 @@ public class RebeldeController {
 
     private final RebeldeFacade rebeldeFacade;
 
+    @RolesAllowed("user")
     @GetMapping
-    @Async
     public CompletableFuture<List<CreateRebeldeDTO>> findAll(){
         return rebeldeFacade.findAll();
     }

@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -17,9 +18,9 @@ public class ItemController {
 
     private final ItemFacade itemFacade;
 
+    @RolesAllowed("user")
     @GetMapping
-    @Async
-    public CompletableFuture<List<ItemDTO>> findAll(){
+    public CompletableFuture<List<ItemDTO>> findAll() {
         return itemFacade.findAll();
     }
 

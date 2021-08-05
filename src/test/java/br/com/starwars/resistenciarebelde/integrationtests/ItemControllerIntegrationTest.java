@@ -11,6 +11,7 @@ import br.com.starwars.resistenciarebelde.testfactories.ItemEntityTestFactory;
 import br.com.starwars.resistenciarebelde.testfactories.ModelMapperTestFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
+@Disabled
 @SpringBootTest
 @AutoConfigureMockMvc
 public class ItemControllerIntegrationTest {
