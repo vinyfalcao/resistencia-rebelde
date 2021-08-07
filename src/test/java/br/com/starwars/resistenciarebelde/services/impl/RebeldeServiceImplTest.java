@@ -190,7 +190,7 @@ class RebeldeServiceImplTest {
                                                    final Long idRebelde,
                                                    final Long quantidade) {
         return new ItemInventarioEntity(idItemInventario,
-                new ItemEntity(idItem, null, null),
+                new ItemEntity(idItem, null, null, null),
                 RebeldeEntityTestFactory.aRebeldeEntity().withId(idRebelde).build(),
                 quantidade);
     }

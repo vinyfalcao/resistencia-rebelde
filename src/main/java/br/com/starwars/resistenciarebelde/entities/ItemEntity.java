@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.UUID;
 
 @Builder(setterPrefix = "with")
 @Entity
@@ -18,6 +19,7 @@ public class ItemEntity {
     @Id
     @GeneratedValue
     private Long id;
+    private UUID uuid;
     @Column(unique = true)
     private String nome;
     private Long pontos;

@@ -18,7 +18,7 @@ public class ItemController {
 
     private final ItemFacade itemFacade;
 
-    @RolesAllowed("user")
+    //@RolesAllowed("user")
     @GetMapping
     public CompletableFuture<List<ItemDTO>> findAll() {
         return itemFacade.findAll();

@@ -13,7 +13,7 @@ public class ItemInventarioRebeldeDTOEntityConverter extends AbstractConverter<I
     protected ItemInventarioEntity convert(ItemInventarioRebeldeDTO source) {
         var entity = new ModelMapper().map(source, ItemInventarioEntity.class);
         entity.setId(null);
-        entity.setItem(new ItemEntity(source.getItemId(), null, null));
+        entity.setItem(new ItemEntity(source.getItemId(),null,  null, null));
         entity.setRebelde(null);
         return entity;
     }
